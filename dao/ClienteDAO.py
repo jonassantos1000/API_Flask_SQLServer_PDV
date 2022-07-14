@@ -1,6 +1,9 @@
 from dao.connectionFactory.connection import connection
 from model.Cliente import Cliente
 from exception.exceptionHandler import *
+import logging
+
+logging.basicConfig(format = "%(asctime)s %(message)s", level=logging.DEBUG)
 
 
 class ClienteDAO:
@@ -11,16 +14,19 @@ class ClienteDAO:
     def save(self, cliente):
         try:
             self.gerarCursor()
+            logging.info('INICIANDO METODO SAVE DE ClienteDAO')
             self._cursor.execute("""
             INSERT INTO estudos.tb_cliente (nome, endereco, telefone)
             VALUES (?,?,?)""", cliente.nome, cliente.endereco, cliente.telefone)
             self._cursor.commit()
         finally:
+            logging.info('METODO SAVE DE ClienteDAO FINALIZADO')
             self.finalizarConexao()
 
     def findAll(self):
         try:
             self.gerarCursor()
+            logging.info('INICIANDO METODO findAll DE ClienteDAO')
             self._cursor.execute(f'select * from estudos.tb_cliente')
             row = self._cursor.fetchone()
             listCliente = []
@@ -29,11 +35,13 @@ class ClienteDAO:
                 row = self._cursor.fetchone()
             return listCliente
         finally:
+            logging.info('METODO findAll DE ClienteDAO FINALIZADO')
             self.finalizarConexao()
 
     def findById(self, id):
         try:
             self.gerarCursor()
+            logging.info('INICIANDO METODO findById DE ClienteDAO')
             self._cursor.execute(f'select * from estudos.tb_cliente where id = {id}')
             row = self._cursor.fetchone()
             if row:
@@ -41,28 +49,35 @@ class ClienteDAO:
                 return cliente
             raise IllegalArgument('Id Invalido', 'Não foi possivel identificar um recurso cliente válido com o id ' + id)
         finally:
+            logging.info('METODO findById DE ClienteDAO FINALIZADO')
             self.finalizarConexao()
 
     def update(self, id, cliente):
         try:
             self.gerarCursor()
+            logging.info('INICIANDO METODO update DE ClienteDAO')
             self._cursor.execute('update estudos.tb_cliente set nome= ?, endereco= ?, telefone= ?  where id=?',
                                  cliente.nome, cliente.endereco, cliente.telefone, id)
             self._cursor.commit()
         finally:
+            logging.info('METODO update DE ClienteDAO FINALIZADO')
             self.finalizarConexao()
 
     def delete(self, id):
         try:
             self.gerarCursor()
+            logging.info('INICIANDO METODO delete DE ClienteDAO')
             self._cursor.execute(f'delete from estudos.tb_cliente where id = {id}')
             self._cursor.commit()
         finally:
+            logging.info('METODO delete DE ClienteDAO FINALIZADO')
             self.finalizarConexao()
 
     def gerarCursor(self):
+        logging.info('INICIANDO CONEXAO COM BANCO DE DADOS')
         self._connection = connection()
         self._cursor = self._connection.cursor()
 
     def finalizarConexao(self):
+        logging.info('CONEXAO COM BANCO DE DADOS FINALIZADO')
         self._connection.close()
