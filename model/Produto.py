@@ -14,7 +14,7 @@ class Produto:
 
     @property
     def preco(self):
-        return self.preco
+        return self._preco
 
     def dict(self):
         produto={}
