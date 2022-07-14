@@ -21,7 +21,7 @@ class PedidoDAO:
             self._cursor.commit()
         finally:
             logging.warning('FINALIZANDO METODO save DE PedidoDAO')
-            self._cursor.close()
+            self.finalizaConexao()
 
     def findById(self,id):
         try:
@@ -38,12 +38,11 @@ class PedidoDAO:
                 cliente = Cliente(row.cliente_id,row.nome,row.endereco,row.telefone).dict()
                 pedido = Pedido(row.id,cliente, float(row.valor_total), str(row.data_venda))
                 return pedido.dict()
-            self.finalizaConexao()
             logging.error(f"Pedido com id {id} não encontrado !")
             raise IllegalArgument('Id Invalido', f"Pedido com id {id} não encontrado !")
         finally:
             logging.info('METODO findById DE PedidoDAO Finalizado')
-            self._cursor.close()
+            self.finalizaConexao()
 
     def findAll(self):
         try:
@@ -60,14 +59,31 @@ class PedidoDAO:
                 cliente = Cliente(row.cliente_id,row.nome,row.endereco,row.telefone).dict()
                 pedido = Pedido(row.id,cliente, float(row.valor_total), str(row.data_venda))
                 listPedido.append(pedido.dict())
-            self.finalizaConexao()
+                row= self._cursor.fetchone()
             return listPedido
         finally:
             logging.info('METODO findById DE PedidoDAO Finalizado')
-            self._cursor.close()
+            self.finalizaConexao()
 
-    def 
+    def delete(self, id):
+        try:
+            logging.info('METODO delete DE PedidoDAO INICIADO')
+            self.gerarCursor()
+            self._cursor.execute('DELETE FROM estudos.pedido_venda where id=?', id)
+            self._cursor.commit()
+        finally:
+            logging.info('METODO delete DE PedidoDAO FINALIZADO')
+            self.finalizaConexao()
 
+    def update(self,id, pedido):
+        try:
+            self.gerarCursor()
+            logging.warning('METODO update DE PedidoDAO FINALIZADO')
+            self._cursor.execute('update estudos.pedido_venda set valor_total=?, cliente_id=?', pedido.valorTotal, pedido.cliente.id)
+            self._cursor.commit()
+        finally:
+            logging.warning('METODO update DE PedidoDAO FINALIZADO')
+            self.finalizaConexao()
 
     def gerarCursor(self):
         logging.info("CONEXAO COM BANCO DE DADOS INICIADO")

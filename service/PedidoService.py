@@ -1,21 +1,26 @@
 from dao.PedidoDAO import *
-from model.Pedido import *
-from model.Cliente import *
 
 dao = PedidoDAO()
 
 
 class PedidoService:
-    def insert(self, jsonPedido):
-        valorTotal = jsonPedido['valorTotal']
-        dataVenda = jsonPedido['dataVenda']
-        cliente = Cliente(**jsonPedido['cliente'])
-        pedido = Pedido(None, cliente, valorTotal, dataVenda)
+    def insert(self, pedido):
         dao.save(pedido)
 
     def findById(self, id):
         if self.__pedidoEhValido(id):
             return dao.findById(id)
+
+    def findAll(self):
+        return dao.findAll()
+
+    def update(self,id, pedido):
+        if self.__pedidoEhValido(id):
+            dao.update(id, pedido)
+
+    def delete(self, id):
+        if self.__pedidoEhValido(id):
+            dao.delete(id)
 
     def __pedidoEhValido(self, id):
         pedido = dao.findById(id)
