@@ -27,7 +27,7 @@ def insert():
     endereco = jsonClient['endereco']
     telefone = jsonClient['telefone']
     cliente = Cliente(None, nome, endereco, telefone)
-    dao.save(cliente)
+    service.insert(cliente)
     return '', 201
 
 
