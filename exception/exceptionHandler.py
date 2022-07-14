@@ -1,0 +1,13 @@
+from flask import jsonify
+
+from exception.IllegalArgument import *
+from server import server
+
+app = server.app
+
+@app.errorhandler(IllegalArgument)
+def handle_bad_request(err):
+    response = {"error": err.description, "message": err.args[1]}
+    app.logger.error
+    return jsonify(response), err.code
+
