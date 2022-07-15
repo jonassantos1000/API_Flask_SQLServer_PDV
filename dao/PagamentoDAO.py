@@ -2,9 +2,11 @@ import pyodbc
 import logging
 from dao.connectionFactory.connection import connection
 from exception.exceptionHandler import *
+from model.PagamentoDTO import *
 from model.Cliente import *
 from model.Pagamento import *
 from model.Pedido import *
+from service.ItensPedidoService import *
 
 logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
 
@@ -14,6 +16,8 @@ select = '''SELECT pv.id as pedido_id, pv.cliente_id, pv.valor_total, pv.data_ve
                                     from estudos.tb_pagamento tp
                                     inner join estudos.pedido_venda pv on (tp.pedido_venda_id=pv.id)
                                     INNER join estudos.tb_cliente tc on (pv.cliente_id=tc.id)'''
+
+serviceItens = ItensPedidoService()
 
 
 class PagamentoDAO:
@@ -54,7 +58,7 @@ class PagamentoDAO:
     def findById(self, id):
         try:
             self.geraCursor()
-            self._cursor.execute(select + ' where id=?', id)
+            self._cursor.execute(select + ' where tp.id=?', id)
             row = self._cursor.fetchone()
             if row:
                 return self.popularObjeto(row)
@@ -85,5 +89,6 @@ class PagamentoDAO:
 
     def popularObjeto(self, row):
         cliente = Cliente(row.cliente_id, row.nome, row.endereco, row.telefone).dict()
-        pedido = Pedido(row.pedido_id, cliente, float(row.valor_total), str(row.data_venda)).dict()
+        listItens = serviceItens.findByIdPedido(row.pedido_id)
+        pedido = Pedido(row.pedido_id, cliente, float(row.valor_total), str(row.data_venda), PagamentoDTO(row.pagamento_id,str(row.data_pagamento)).dict(),listItens).dict()
         return Pagamento(row.pagamento_id, pedido, str(row.data_pagamento)).dict()

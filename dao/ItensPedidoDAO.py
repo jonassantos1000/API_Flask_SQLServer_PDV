@@ -37,15 +37,30 @@ class ItensPedidoDAO:
     def save(self, listItem, idPedido):
         try:
             self.gerarCursor()
+            logging.info('METODO SAVE DE ItensPedidoDAO INICIADO')
             for item in listItem:
                 self._cursor.execute('''
                     INSERT INTO estudos.tb_itens_pedido (produto_id,pedido_venda_id, quantidade, total) 
                     values (?, ?, ?, ?)''', item.produto.id, idPedido, item.quantidade, item.total)
             self._cursor.commit()
+
         finally:
+            logging.info('METODO SAVE DE ItensPedidoDAO FINALIZADO')
             self.finalizarConexao()
 
-
+    def delete (self, idPedido):
+        try:
+            self.gerarCursor()
+            logging.info("METODO DELETE DE itensPedidoDao INICIADO")
+            self._cursor.execute('''DELETE FROM estudos.tb_itens_pedido where pedido_venda_id = ?''', idPedido)
+            self._cursor.commit()
+        except :
+            logging.error("OCORREU UM ERRO DURANTE A EXECUÇÃO DO METODO DELETE DE itensPedidoDao")
+            self._cursor.rollback()
+            logging.error("EFETUADO ROLLBACK DO METODO DELETE DE itensPedidoDao")
+        finally:
+            logging.info("METODO DELETE DE itensPedidoDao FINALIZADO")
+            self.finalizarConexao()
 
     def gerarCursor(self):
         self._connection = connection()

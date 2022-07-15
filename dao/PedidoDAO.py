@@ -30,13 +30,16 @@ class PedidoDAO:
             self.gerarCursor()
             logging.warning('INICIANDO METODO save DE PedidoDAO')
             self._cursor.execute(
-                'insert into estudos.pedido_venda (valor_total, data_venda, cliente_id) values (?,?,?)',
+                'insert into estudos.pedido_venda (valor_total, data_venda, cliente_id) OUTPUT Inserted.id values (?,?,?)',
                 pedido.valorTotal, pedido.dataVenda, pedido.cliente.id)
-            self._cursor.commit()
-            self._cursor.execute('''SELECT IDENT_CURRENT('estudos.pedido_venda') as id''')
             row = self._cursor.fetchone()
             pedidoId= row.id
+            self._cursor.commit()
             serviceItensPedido.insert(pedido.itensPedido, pedidoId)
+        except Exception as error:
+            logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO save DE PedidoDAO:\n {error.args}')
+            self._cursor.rollback()
+            logging.error('REALIZADO ROLLBACK NO METODO save DE PedidoDAO')
         finally:
             logging.warning('FINALIZANDO METODO save DE PedidoDAO')
             self.finalizaConexao()
@@ -77,8 +80,13 @@ class PedidoDAO:
         try:
             logging.info('METODO delete DE PedidoDAO INICIADO')
             self.gerarCursor()
+            serviceItensPedido.delete(id, self._cursor)
             self._cursor.execute('DELETE FROM estudos.pedido_venda where id=?', id)
             self._cursor.commit()
+        except:
+            logging.error('OCORREU UM ERRO DURANTE A EXECUCAO DO METODO delete DE PedidoDAO')
+            self._cursor.rollback()
+            logging.error('REALIZADO ROLLBACK NO METODO delete DE PedidoDAO')
         finally:
             logging.info('METODO delete DE PedidoDAO FINALIZADO')
             self.finalizaConexao()
@@ -87,9 +95,11 @@ class PedidoDAO:
         try:
             self.gerarCursor()
             logging.warning('METODO update DE PedidoDAO FINALIZADO')
-            self._cursor.execute('update estudos.pedido_venda set valor_total=?, cliente_id=?', pedido.valorTotal,
-                                 pedido.cliente.id)
+            self._cursor.execute('update estudos.pedido_venda set valor_total=?, cliente_id=? where id=?', pedido.valorTotal,
+                                 pedido.cliente.id, id)
             self._cursor.commit()
+            serviceItensPedido.update(pedido.itensPedido,id)
+
         finally:
             logging.warning('METODO update DE PedidoDAO FINALIZADO')
             self.finalizaConexao()

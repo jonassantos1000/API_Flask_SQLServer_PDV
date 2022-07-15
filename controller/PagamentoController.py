@@ -21,3 +21,7 @@ def insertPagamento():
 @app.route('/pagamento', methods=['GET'])
 def findAllPagamento():
     return json.dumps(service.findAll())
+
+@app.route('/pagamento/<id>', methods=['GET'])
+def findByIdPagamento(id):
+    return json.dumps(service.findById(id))

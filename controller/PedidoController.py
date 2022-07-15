@@ -24,7 +24,7 @@ def insertPedido():
 @app.route('/pedido/<id>', methods=['PUT'])
 def updatePedido(id):
     jsonPedido = request.get_json()
-    pedido = __popularObjeto()
+    pedido = __popularObjeto(jsonPedido)
     service.update(id,pedido)
     return '', 200
 
