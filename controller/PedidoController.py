@@ -18,7 +18,7 @@ def insertPedido():
     valorTotal = jsonPedido['valorTotal']
     dataVenda = jsonPedido['dataVenda']
     cliente = Cliente(**jsonPedido['cliente'])
-    pedido = Pedido(None, cliente, valorTotal, dataVenda)
+    pedido = Pedido(None, cliente, valorTotal, dataVenda,{})
     service.insert(pedido)
     return '', 201
 
@@ -28,7 +28,7 @@ def updatePedido(id):
     valorTotal = jsonPedido['valorTotal']
     dataVenda = jsonPedido['dataVenda']
     cliente = Cliente(**jsonPedido['cliente'])
-    pedido = Pedido(None, cliente, valorTotal, dataVenda)
+    pedido = Pedido(None, cliente, valorTotal, dataVenda,{})
     service.update(id,pedido)
     return '', 200
 

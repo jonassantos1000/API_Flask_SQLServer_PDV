@@ -1,11 +1,20 @@
 from dao.connectionFactory.connection import *
 from model.Pedido import *
 from model.Cliente import *
+from model.PagamentoDTO import *
 from exception.exceptionHandler import *
 import logging
 
 logging.basicConfig(format = "%(asctime)s %(message)s", level=logging.DEBUG)
 
+select='''select 
+pv.id, pv.valor_total, pv.data_venda, pv.cliente_id, 
+tc.nome, tc.endereco, tc.telefone,
+tp.id as pagamento_id, tp.data_pagamento 
+from estudos.pedido_venda pv 
+inner join estudos.tb_cliente tc on (pv.cliente_id = tc.id)
+left join estudos.tb_pagamento tp on (tp.pedido_venda_id=pv.id)
+'''
 
 class PedidoDAO:
     def __init__(self):
@@ -27,17 +36,10 @@ class PedidoDAO:
         try:
             self.gerarCursor()
             logging.info('INICIANDO METODO findById de PedidoDAO')
-            self._cursor.execute('''
-            select pv.id, pv.valor_total, pv.data_venda, pv.cliente_id, tc.nome, tc.endereco, tc.telefone  
-            from estudos.pedido_venda pv 
-            inner join estudos.tb_cliente tc on (pv.id = tc.id) 
-            where pv.id = ?''', id)
-
+            self._cursor.execute(select + ' where pv.id = ?', id)
             row = self._cursor.fetchone()
             if row:
-                cliente = Cliente(row.cliente_id,row.nome,row.endereco,row.telefone).dict()
-                pedido = Pedido(row.id,cliente, float(row.valor_total), str(row.data_venda))
-                return pedido.dict()
+                return self.populaObjeto(row)
             logging.error(f"Pedido com id {id} não encontrado !")
             raise IllegalArgument('Id Invalido', f"Pedido com id {id} não encontrado !")
         finally:
@@ -48,17 +50,11 @@ class PedidoDAO:
         try:
             self.gerarCursor()
             logging.info('INICIANDO METODO findAll de PedidoDAO')
-            self._cursor.execute('''
-            select pv.id, pv.valor_total, pv.data_venda, pv.cliente_id, tc.nome, tc.endereco, tc.telefone  
-            from estudos.pedido_venda pv 
-            inner join estudos.tb_cliente tc on (pv.id = tc.id)''')
-
+            self._cursor.execute(select)
             row = self._cursor.fetchone()
             listPedido=[]
             while row:
-                cliente = Cliente(row.cliente_id,row.nome,row.endereco,row.telefone).dict()
-                pedido = Pedido(row.id,cliente, float(row.valor_total), str(row.data_venda))
-                listPedido.append(pedido.dict())
+                listPedido.append(self.populaObjeto(row))
                 row= self._cursor.fetchone()
             return listPedido
         finally:
@@ -93,3 +89,11 @@ class PedidoDAO:
     def finalizaConexao(self):
         logging.info("CONEXAO COM BANCO DE DADOS FINALIZADO")
         self._connection.close()
+
+    def populaObjeto(self, row):
+        cliente = Cliente(row.cliente_id, row.nome, row.endereco, row.telefone).dict()
+        pagamento={}
+        if row.pagamento_id != None:
+            pagamento = PagamentoDTO(row.pagamento_id, str(row.data_pagamento)).dict()
+
+        return Pedido(row.id, cliente, float(row.valor_total), str(row.data_venda),pagamento).dict()
