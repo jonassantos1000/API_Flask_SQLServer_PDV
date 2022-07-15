@@ -5,6 +5,8 @@ dao = PedidoDAO()
 
 class PedidoService:
     def insert(self, pedido):
+        if len(pedido.itensPedido) == 0:
+            raise IllegalArgument('Pedido Invalido', 'O pedido deve conter pelo menos 1 item')
         dao.save(pedido)
 
     def findById(self, id):

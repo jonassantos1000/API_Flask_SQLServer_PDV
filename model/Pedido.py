@@ -1,10 +1,11 @@
 class Pedido:
-    def __init__(self, id, cliente, valorTotal, dataVenda, pagamento):
+    def __init__(self, id, cliente, valorTotal, dataVenda, pagamento, itensPedido):
         self._id = id
         self._cliente= cliente
         self._valorTotal= valorTotal
         self._dataVenda= dataVenda
         self._pagamento = pagamento
+        self._itensPedido = itensPedido
 
 
     @property
@@ -26,6 +27,10 @@ class Pedido:
     @property
     def pagamento(self):
         return self._pagamento
+
+    @property
+    def itensPedido(self):
+        return self._itensPedido
 
     def dict(self):
         pedido={}
