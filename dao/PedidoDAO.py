@@ -8,15 +8,6 @@ import logging
 
 logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
 
-select = '''select 
-pv.id, pv.valor_total, pv.data_venda, pv.cliente_id, 
-tc.nome, tc.endereco, tc.telefone,
-tp.id as pagamento_id, tp.data_pagamento 
-from estudos.pedido_venda pv 
-inner join estudos.tb_cliente tc on (pv.cliente_id = tc.id)
-left join estudos.tb_pagamento tp on (tp.pedido_venda_id=pv.id)
-'''
-
 serviceItensPedido = ItensPedidoService()
 
 
@@ -33,7 +24,7 @@ class PedidoDAO:
                 'insert into estudos.pedido_venda (valor_total, data_venda, cliente_id) OUTPUT Inserted.id values (?,?,?)',
                 pedido.valorTotal, pedido.dataVenda, pedido.cliente.id)
             row = self._cursor.fetchone()
-            pedidoId= row.id
+            pedidoId = row.id
             self._cursor.commit()
             serviceItensPedido.insert(pedido.itensPedido, pedidoId)
         except Exception as error:
@@ -57,6 +48,8 @@ class PedidoDAO:
                 return self.populaObjeto(row)
             logging.error(f"Pedido com id {id} não encontrado !")
             raise IllegalArgument('Id Invalido', f"Pedido com id {id} não encontrado !")
+        except Exception as error:
+            logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO findById DE PedidoDAO:\n {error.args}')
         finally:
             logging.info('METODO findById DE PedidoDAO Finalizado')
             self.finalizaConexao()
@@ -72,6 +65,8 @@ class PedidoDAO:
                 listPedido.append(self.populaObjeto(row))
                 row = self._cursor.fetchone()
             return listPedido
+        except Exception as error:
+            logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO findAll DE PedidoDAO:\n {error.args}')
         finally:
             logging.info('METODO findById DE PedidoDAO Finalizado')
             self.finalizaConexao()
@@ -95,22 +90,24 @@ class PedidoDAO:
         try:
             self.gerarCursor()
             logging.warning('METODO update DE PedidoDAO FINALIZADO')
-            self._cursor.execute('update estudos.pedido_venda set valor_total=?, cliente_id=? where id=?', pedido.valorTotal,
+            self._cursor.execute('update estudos.pedido_venda set valor_total=?, cliente_id=? where id=?',
+                                 pedido.valorTotal,
                                  pedido.cliente.id, id)
             self._cursor.commit()
-            serviceItensPedido.update(pedido.itensPedido,id)
-
+            serviceItensPedido.update(pedido.itensPedido, id)
+        except:
+            logging.error('OCORREU UM ERRO DURANTE A EXECUCAO DO METODO update DE PedidoDAO')
+            self._cursor.rollback()
+            logging.error('REALIZADO ROLLBACK NO METODO update DE PedidoDAO')
         finally:
             logging.warning('METODO update DE PedidoDAO FINALIZADO')
             self.finalizaConexao()
 
     def gerarCursor(self):
-        logging.info("CONEXAO COM BANCO DE DADOS INICIADO")
         self._connection = connection()
         self._cursor = self._connection.cursor()
 
     def finalizaConexao(self):
-        logging.info("CONEXAO COM BANCO DE DADOS FINALIZADO")
         self._connection.close()
 
     def populaObjeto(self, row):
@@ -121,3 +118,13 @@ class PedidoDAO:
             pagamento = PagamentoDTO(row.pagamento_id, str(row.data_pagamento)).dict()
 
         return Pedido(row.id, cliente, float(row.valor_total), str(row.data_venda), pagamento, itens).dict()
+
+
+select = '''select 
+pv.id, pv.valor_total, pv.data_venda, pv.cliente_id, 
+tc.nome, tc.endereco, tc.telefone,
+tp.id as pagamento_id, tp.data_pagamento 
+from estudos.pedido_venda pv 
+inner join estudos.tb_cliente tc on (pv.cliente_id = tc.id)
+left join estudos.tb_pagamento tp on (tp.pedido_venda_id=pv.id)
+'''

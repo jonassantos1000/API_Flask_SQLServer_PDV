@@ -10,13 +10,6 @@ from service.ItensPedidoService import *
 
 logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
 
-select = '''SELECT pv.id as pedido_id, pv.cliente_id, pv.valor_total, pv.data_venda, 
-                                    tp.id as pagamento_id,tp.data_pagamento,
-                                    tc.nome, tc.endereco, tc.telefone  
-                                    from estudos.tb_pagamento tp
-                                    inner join estudos.pedido_venda pv on (tp.pedido_venda_id=pv.id)
-                                    INNER join estudos.tb_cliente tc on (pv.cliente_id=tc.id)'''
-
 serviceItens = ItensPedidoService()
 
 
@@ -34,8 +27,14 @@ class PagamentoDAO:
             self._cursor.commit()
         except pyodbc.IntegrityError as error:
             logging.error(f"ERRO AO PROCESSAR METODO save DE PagamentoDAO: {error.args}")
+            self._cursor.rollback()
+            logging.error(f"FOI REALIZADO O ROLLBACK NO METODO save DE PagamentoDAO")
             raise IntegrityError('Violação de constraint',
                                  'Operação não suportada, pois, este pedido já possui pagamento vinculado')
+        except Exception as error:
+            logging.error(f"ERRO AO PROCESSAR METODO save DE PagamentoDAO: {error.args}")
+            self._cursor.rollback()
+            logging.error(f"FOI REALIZADO O ROLLBACK NO METODO save DE PagamentoDAO")
         finally:
             logging.info('METODO SAVE DE PagamentoDAO FINALIZADO')
             self.finalizarConexao()
@@ -51,6 +50,8 @@ class PagamentoDAO:
                 listPagamentos.append(self.popularObjeto(row))
                 row = self._cursor.fetchone()
             return listPagamentos
+        except Exception as error:
+            logging.error(f"ERRO AO PROCESSAR METODO findAll DE PagamentoDAO: {error.args}")
         finally:
             logging.info('METODO findAll de PagamentoDAO FINALIZADO')
             self.finalizarConexao()
@@ -64,6 +65,8 @@ class PagamentoDAO:
                 return self.popularObjeto(row)
             logging.error(f'Não foi possivel encontrar um recurso pagamento com o id {id}')
             raise IllegalArgument('Id Invalido', f'Não foi possivel encontrar um recurso pagamento com o id {id}')
+        except Exception as error:
+            logging.error(f"ERRO AO PROCESSAR METODO findById DE PagamentoDAO: {error.args}")
         finally:
             logging.info(f'METODO findById FINALIZADO')
             self.finalizarConexao()
@@ -74,21 +77,32 @@ class PagamentoDAO:
             logging.info('METODO DELETE DE PagamentoDAO INICIADO')
             self._cursor.execute('DELETE FROM estudos.tb_pagamento where id = ?', id)
             self._cursor.commit()
+        except Exception as error:
+            logging.error(f"ERRO AO PROCESSAR METODO delete DE PagamentoDAO: {error.args}")
+            self._cursor.rollback()
+            logging.error(f"FOI REALIZADO O ROLLBACK NO METODO delete DE PagamentoDAO")
         finally:
             logging.info('METODO DELETE DE PagamentoDAO FINALIZADO')
             self.finalizarConexao()
 
     def geraCursor(self):
-        logging.info('CONEXAO COM BANCO DE DADOS INICIALIZADA')
         self._connection = connection()
         self._cursor = self._connection.cursor()
 
     def finalizarConexao(self):
-        logging.info('CONEXAO COM BANCO DE DADOS FINALIZADA')
         self._cursor.close()
 
     def popularObjeto(self, row):
         cliente = Cliente(row.cliente_id, row.nome, row.endereco, row.telefone).dict()
         listItens = serviceItens.findByIdPedido(row.pedido_id)
-        pedido = Pedido(row.pedido_id, cliente, float(row.valor_total), str(row.data_venda), PagamentoDTO(row.pagamento_id,str(row.data_pagamento)).dict(),listItens).dict()
+        pedido = Pedido(row.pedido_id, cliente, float(row.valor_total), str(row.data_venda),
+                        PagamentoDTO(row.pagamento_id, str(row.data_pagamento)).dict(), listItens).dict()
         return Pagamento(row.pagamento_id, pedido, str(row.data_pagamento)).dict()
+
+
+select = '''SELECT pv.id as pedido_id, pv.cliente_id, pv.valor_total, pv.data_venda, 
+                                    tp.id as pagamento_id,tp.data_pagamento,
+                                    tc.nome, tc.endereco, tc.telefone  
+                                    from estudos.tb_pagamento tp
+                                    inner join estudos.pedido_venda pv on (tp.pedido_venda_id=pv.id)
+                                    INNER join estudos.tb_cliente tc on (pv.cliente_id=tc.id)'''

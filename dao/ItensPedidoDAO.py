@@ -5,6 +5,7 @@ from model.Produto import *
 
 logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
 
+
 class ItensPedidoDAO:
     def __init__(self):
         self._connection = None
@@ -29,10 +30,13 @@ class ItensPedidoDAO:
                 item = ItensPedido(row.id, produto, row.quantidade, float(row.total)).dict()
                 listItens.append(item)
                 row = self._cursor.fetchone()
+
+            return listItens
+        except Exception as error:
+            logging.error(
+                f"OCORREU UM ERRO DURANTE A EXECUCAO DO METODO findItensPedidoById de ItensPedidoDAO:\n {error.args}")
         finally:
             self.finalizarConexao()
-
-        return listItens
 
     def save(self, listItem, idPedido):
         try:
@@ -43,21 +47,25 @@ class ItensPedidoDAO:
                     INSERT INTO estudos.tb_itens_pedido (produto_id,pedido_venda_id, quantidade, total) 
                     values (?, ?, ?, ?)''', item.produto.id, idPedido, item.quantidade, item.total)
             self._cursor.commit()
-
+        except Exception as error:
+            logging.error(
+                f"OCORREU UM ERRO DURANTE A EXECUCAO DO METODO save de ItensPedidoDAO:\n {error.args}")
+            self._cursor.rollback()
+            logging.error(f"FOI REALIZADO O ROLLBACK DO METODO save de ItensPedidoDAO")
         finally:
             logging.info('METODO SAVE DE ItensPedidoDAO FINALIZADO')
             self.finalizarConexao()
 
-    def delete (self, idPedido):
+    def delete(self, idPedido):
         try:
             self.gerarCursor()
-            logging.info("METODO DELETE DE itensPedidoDao INICIADO")
+            logging.info("METODO DELETE DE itensPedidoDAO INICIADO")
             self._cursor.execute('''DELETE FROM estudos.tb_itens_pedido where pedido_venda_id = ?''', idPedido)
             self._cursor.commit()
-        except :
-            logging.error("OCORREU UM ERRO DURANTE A EXECUÇÃO DO METODO DELETE DE itensPedidoDao")
+        except:
+            logging.error("OCORREU UM ERRO DURANTE A EXECUÇÃO DO METODO DELETE DE itensPedidoDAO")
             self._cursor.rollback()
-            logging.error("EFETUADO ROLLBACK DO METODO DELETE DE itensPedidoDao")
+            logging.error("EFETUADO ROLLBACK DO METODO DELETE DE itensPedidoDAO")
         finally:
             logging.info("METODO DELETE DE itensPedidoDao FINALIZADO")
             self.finalizarConexao()

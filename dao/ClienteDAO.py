@@ -3,7 +3,7 @@ from model.Cliente import Cliente
 from exception.exceptionHandler import *
 import logging
 
-logging.basicConfig(format = "%(asctime)s %(message)s", level=logging.DEBUG)
+logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
 
 
 class ClienteDAO:
@@ -19,6 +19,10 @@ class ClienteDAO:
             INSERT INTO estudos.tb_cliente (nome, endereco, telefone)
             VALUES (?,?,?)""", cliente.nome, cliente.endereco, cliente.telefone)
             self._cursor.commit()
+        except Exception as error:
+            logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO SAVE DE ClienteDAO:\n {error.args}')
+            self._cursor.rollback()
+            logging.error(f'REALIZADO ROLLBACK NO METODO save DE ClienteDAO')
         finally:
             logging.info('METODO SAVE DE ClienteDAO FINALIZADO')
             self.finalizarConexao()
@@ -34,6 +38,8 @@ class ClienteDAO:
                 listCliente.append(Cliente(row.id, row.nome, row.endereco, row.telefone).dict())
                 row = self._cursor.fetchone()
             return listCliente
+        except Exception as error:
+            logging.error(f"OCORREU UM ERRO DURANTE A EXECUCAO DO METODO findALL de ClienteDAO:\n {error.args}")
         finally:
             logging.info('METODO findAll DE ClienteDAO FINALIZADO')
             self.finalizarConexao()
@@ -47,7 +53,10 @@ class ClienteDAO:
             if row:
                 cliente = Cliente(row.id, row.nome, row.endereco, row.telefone).dict()
                 return cliente
-            raise IllegalArgument('Id Invalido', 'Não foi possivel identificar um recurso cliente válido com o id ' + id)
+            raise IllegalArgument('Id Invalido',
+                                  'Não foi possivel identificar um recurso cliente válido com o id ' + id)
+        except Exception as error:
+            logging.error(f"OCORREU UM ERRO DURANTE A EXECUCAO DO METODO findById de ClienteDAO:\n {error.args}")
         finally:
             logging.info('METODO findById DE ClienteDAO FINALIZADO')
             self.finalizarConexao()
@@ -59,6 +68,10 @@ class ClienteDAO:
             self._cursor.execute('update estudos.tb_cliente set nome= ?, endereco= ?, telefone= ?  where id=?',
                                  cliente.nome, cliente.endereco, cliente.telefone, id)
             self._cursor.commit()
+        except Exception as error:
+            logging.error(f"OCORREU UM ERRO DURANTE A EXECUCAO DO METODO update de ClienteDAO:\n {error.args}")
+            self._cursor.rollback()
+            logging.error(f"FOI REALIZADO O ROLLBACK DO METODO update de ClienteDAO")
         finally:
             logging.info('METODO update DE ClienteDAO FINALIZADO')
             self.finalizarConexao()
@@ -69,15 +82,17 @@ class ClienteDAO:
             logging.info('INICIANDO METODO delete DE ClienteDAO')
             self._cursor.execute(f'delete from estudos.tb_cliente where id = {id}')
             self._cursor.commit()
+        except Exception as error:
+            logging.error(f"OCORREU UM ERRO DURANTE A EXECUCAO DO METODO delete de ClienteDAO:\n {error.args}")
+            self._cursor.rollback()
+            logging.error(f"FOI REALIZADO O ROLLBACK DO METODO delete de ClienteDAO")
         finally:
             logging.info('METODO delete DE ClienteDAO FINALIZADO')
             self.finalizarConexao()
 
     def gerarCursor(self):
-        logging.info('INICIANDO CONEXAO COM BANCO DE DADOS')
         self._connection = connection()
         self._cursor = self._connection.cursor()
 
     def finalizarConexao(self):
-        logging.info('CONEXAO COM BANCO DE DADOS FINALIZADO')
         self._connection.close()
