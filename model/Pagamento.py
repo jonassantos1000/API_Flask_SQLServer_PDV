@@ -15,3 +15,9 @@ class Pagamento:
     @property
     def dataPagamento(self):
         return self._dataPagamento
+
+    def dict(self):
+        pagamento={}
+        for key in self.__dict__:
+            pagamento[key.replace('_','')] = self.__dict__.__getitem__(key)
+        return pagamento
