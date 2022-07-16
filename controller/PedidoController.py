@@ -45,12 +45,11 @@ def __popularObjeto(jsonPedido):
         listItens= []
         for itens in jsonPedido['itensPedido']:
             produto = Produto(**itens['produto'])
-            id = itens['id']
             quantidade = itens['quantidade']
+            precoUnitario = itens['precoUnitario']
             total = itens['total']
-            item = ItensPedido(id,produto,quantidade,total)
+            item = ItensPedido(None,produto,quantidade, precoUnitario,total)
             listItens.append(item)
-
         return Pedido(None, cliente, valorTotal, dataVenda, {}, listItens)
-    except:
-        raise IllegalArgument('Json Invalido', 'O disponibilizado não é um recurso Pedido Válido')
+    except KeyError as error:
+        raise IllegalArgument('JSON INVALIDO', f'O JSON INFORMADO NÃO TEM O CAMPO {error.__str__()}, POR FAVOR REALIZE O AJUSTE E TENTE NOVAMENTE !')

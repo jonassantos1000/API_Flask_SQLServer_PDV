@@ -65,8 +65,6 @@ class PagamentoDAO:
                 return self.popularObjeto(row)
             logging.error(f'Não foi possivel encontrar um recurso pagamento com o id {id}')
             raise IllegalArgument('Id Invalido', f'Não foi possivel encontrar um recurso pagamento com o id {id}')
-        except Exception as error:
-            logging.error(f"ERRO AO PROCESSAR METODO findById DE PagamentoDAO: {error.args}")
         finally:
             logging.info(f'METODO findById FINALIZADO')
             self.finalizarConexao()

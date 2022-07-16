@@ -1,10 +1,11 @@
 from model.Produto import *
 
 class ItensPedido:
-    def __init__(self, id, produto, quantidade, total):
+    def __init__(self, id, produto, quantidade, precoUnitario,total):
         self._id = id
         self._produto = produto
         self._quantidade = quantidade
+        self._precoUnitario= precoUnitario
         self._total = total
 
     @property
@@ -18,6 +19,10 @@ class ItensPedido:
     @property
     def quantidade(self):
         return self._quantidade
+
+    @property
+    def precoUnitario(self):
+        return self._precoUnitario
 
     @property
     def total(self):

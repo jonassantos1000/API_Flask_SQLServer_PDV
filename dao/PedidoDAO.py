@@ -25,12 +25,13 @@ class PedidoDAO:
                 pedido.valorTotal, pedido.dataVenda, pedido.cliente.id)
             row = self._cursor.fetchone()
             pedidoId = row.id
+            serviceItensPedido.insert(pedido.itensPedido, pedidoId, self._cursor)
             self._cursor.commit()
-            serviceItensPedido.insert(pedido.itensPedido, pedidoId)
         except Exception as error:
-            logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO save DE PedidoDAO:\n {error.args}')
+            logging.error(f'REALIZANDO ROLLBACK DO METODO save de PedidoDAO:\n {error.args}')
             self._cursor.rollback()
-            logging.error('REALIZADO ROLLBACK NO METODO save DE PedidoDAO')
+            raise BadRequest('PARAMETROS INVALIDOS',
+                             'NAO FOI POSSIVEL PROSSEGUIR COM A OPERACAO, VERIFIQUE AS INFORMACOES INSERIDAS !')
         finally:
             logging.warning('FINALIZANDO METODO save DE PedidoDAO')
             self.finalizaConexao()
@@ -48,8 +49,6 @@ class PedidoDAO:
                 return self.populaObjeto(row)
             logging.error(f"Pedido com id {id} não encontrado !")
             raise IllegalArgument('Id Invalido', f"Pedido com id {id} não encontrado !")
-        except Exception as error:
-            logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO findById DE PedidoDAO:\n {error.args}')
         finally:
             logging.info('METODO findById DE PedidoDAO Finalizado')
             self.finalizaConexao()
@@ -67,6 +66,8 @@ class PedidoDAO:
             return listPedido
         except Exception as error:
             logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO findAll DE PedidoDAO:\n {error.args}')
+            raise BadRequest('Parametros invalidos',
+                             'NAO FOI POSSIVEL PROSSEGUIR COM A OPERACAO, VERIFIQUE AS INFORMACOES INSERIDAS !')
         finally:
             logging.info('METODO findById DE PedidoDAO Finalizado')
             self.finalizaConexao()
@@ -78,9 +79,16 @@ class PedidoDAO:
             serviceItensPedido.delete(id, self._cursor)
             self._cursor.execute('DELETE FROM estudos.pedido_venda where id=?', id)
             self._cursor.commit()
-        except:
-            logging.error('OCORREU UM ERRO DURANTE A EXECUCAO DO METODO delete DE PedidoDAO')
+        except pyodbc.IntegrityError as error:
+            logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO delete DE PedidoDAO:\n {error.args}')
             self._cursor.rollback()
+            raise IntegrityError('VIOLACAO DE CONSTRAINT',
+                                 'NÃO É POSSIVEL EXECUTAR ESTA AÇÃO, POIS O PEDIDO POSSUI PAGAMENTO VINCULADO')
+            logging.error('REALIZADO ROLLBACK NO METODO delete DE PedidoDAO')
+        except Exception as error:
+            logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO delete DE PedidoDAO:\n {error.args}')
+            self._cursor.rollback()
+            raise BadRequest('Parametros invalidos', 'NAO FOI POSSIVEL PROSSEGUIR COM A OPERACAO, VERIFIQUE AS INFORMACOES INSERIDAS !')
             logging.error('REALIZADO ROLLBACK NO METODO delete DE PedidoDAO')
         finally:
             logging.info('METODO delete DE PedidoDAO FINALIZADO')
@@ -93,12 +101,14 @@ class PedidoDAO:
             self._cursor.execute('update estudos.pedido_venda set valor_total=?, cliente_id=? where id=?',
                                  pedido.valorTotal,
                                  pedido.cliente.id, id)
+            serviceItensPedido.update(pedido.itensPedido, id, self._cursor)
             self._cursor.commit()
-            serviceItensPedido.update(pedido.itensPedido, id)
-        except:
-            logging.error('OCORREU UM ERRO DURANTE A EXECUCAO DO METODO update DE PedidoDAO')
+        except Exception as error:
+            logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO update DE PedidoDAO:\n {error.args}')
             self._cursor.rollback()
             logging.error('REALIZADO ROLLBACK NO METODO update DE PedidoDAO')
+            raise BadRequest('Parametros invalidos',
+                             'NAO FOI POSSIVEL PROSSEGUIR COM A OPERACAO, VERIFIQUE AS INFORMACOES INSERIDAS !')
         finally:
             logging.warning('METODO update DE PedidoDAO FINALIZADO')
             self.finalizaConexao()

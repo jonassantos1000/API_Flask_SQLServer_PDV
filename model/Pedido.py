@@ -17,6 +17,10 @@ class Pedido:
         return self._cliente
 
     @property
+    def itensPedido(self):
+        return self._itensPedido
+
+    @property
     def valorTotal(self):
         return self._valorTotal
 
@@ -27,10 +31,6 @@ class Pedido:
     @property
     def pagamento(self):
         return self._pagamento
-
-    @property
-    def itensPedido(self):
-        return self._itensPedido
 
     def dict(self):
         pedido={}

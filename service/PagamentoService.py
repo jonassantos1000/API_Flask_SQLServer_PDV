@@ -14,7 +14,7 @@ class PagamentoService:
             return dao.findById(id)
 
     def delete(self, id):
-        if self.__PagamentoEhValido():
+        if self.__PagamentoEhValido(id):
             return dao.delete(id)
 
     def __PagamentoEhValido(self, id):

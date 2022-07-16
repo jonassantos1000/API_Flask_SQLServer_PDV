@@ -16,10 +16,7 @@ def findAllProduto():
 @app.route('/produto', methods=['POST'])
 def insertProduto():
     jsonProduto=request.get_json()
-    id = jsonProduto['id']
-    descricao = jsonProduto['descricao']
-    preco = jsonProduto['preco']
-    produto = Produto(id,descricao,preco)
+    produto = popularObjeto(jsonProduto)
     service.insert(produto)
     return '', 201
 
@@ -31,9 +28,7 @@ def findByIdProduto(id):
 @app.route('/produto/<id>', methods=['PUT'])
 def updateProduto(id):
     jsonProduto=request.get_json()
-    descricao = jsonProduto['descricao']
-    preco = jsonProduto['preco']
-    produto = Produto(descricao=descricao,preco=preco)
+    produto = popularObjeto(jsonProduto)
     service.update(id,produto)
     return '', 200
 
@@ -42,3 +37,11 @@ def deleteProduto(id):
     service.delete(id)
     return '', 204
 
+def popularObjeto(json):
+    try:
+        jsonProduto=request.get_json()
+        descricao = jsonProduto['descricao']
+        preco = jsonProduto['preco']
+        return Produto(id,descricao,preco)
+    except KeyError as error:
+        raise IllegalArgument('JSON INVALIDO', f'O JSON INFORMADO NÃO TEM O CAMPO {error.__str__()}, POR FAVOR REALIZE O AJUSTE E TENTE NOVAMENTE !')

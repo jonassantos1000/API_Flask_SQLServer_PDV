@@ -13,29 +13,13 @@ class Cliente:
     def nome(self):
         return self._nome
 
-    @nome.setter
-    def nome(self, nome):
-        self._nome=nome
-
     @property
     def endereco(self):
         return self._endereco
 
-    @endereco.setter
-    def nome(self, endereco):
-        self._endereco = endereco
-
     @property
     def telefone(self):
         return self._telefone
-
-    @telefone.setter
-    def nome(self, telefone):
-        self._telefone = telefone
-
-    @id.setter
-    def nome(self, id):
-        self._id = id
 
     def dict(self):
         client={}

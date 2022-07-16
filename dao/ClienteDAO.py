@@ -15,9 +15,7 @@ class ClienteDAO:
         try:
             self.gerarCursor()
             logging.info('INICIANDO METODO SAVE DE ClienteDAO')
-            self._cursor.execute("""
-            INSERT INTO estudos.tb_cliente (nome, endereco, telefone)
-            VALUES (?,?,?)""", cliente.nome, cliente.endereco, cliente.telefone)
+            self._cursor.execute("""INSERT INTO estudos.tb_cliente (nome, endereco, telefone) VALUES (?,?,?)""", cliente.nome, cliente.endereco, cliente.telefone)
             self._cursor.commit()
         except Exception as error:
             logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO SAVE DE ClienteDAO:\n {error.args}')
@@ -55,8 +53,6 @@ class ClienteDAO:
                 return cliente
             raise IllegalArgument('Id Invalido',
                                   'Não foi possivel identificar um recurso cliente válido com o id ' + id)
-        except Exception as error:
-            logging.error(f"OCORREU UM ERRO DURANTE A EXECUCAO DO METODO findById de ClienteDAO:\n {error.args}")
         finally:
             logging.info('METODO findById DE ClienteDAO FINALIZADO')
             self.finalizarConexao()

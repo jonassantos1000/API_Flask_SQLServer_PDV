@@ -53,8 +53,6 @@ class ProdutoDAO:
                 produto = Produto(row.id, row.descricao, float(row.preco)).dict()
                 return produto
             raise IllegalArgument('Id Invalido', 'Não foi possivel encontrar um recurso Produto válido com o id ' + id)
-        except Exception as error:
-            logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO findById DE ProdutoDAO:\n {error.args}')
         finally:
             logging.info('METODO findById DE ProdutoDAO FINALIZADO')
             self.finalizarConexao()

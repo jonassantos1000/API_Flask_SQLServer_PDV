@@ -16,7 +16,7 @@ def insertPagamento():
     pagamento = Pagamento(None,pedido,dataPagamento)
     
     service.insert(pagamento)
-    return ''
+    return '', 201
 
 @app.route('/pagamento', methods=['GET'])
 def findAllPagamento():
@@ -25,3 +25,8 @@ def findAllPagamento():
 @app.route('/pagamento/<id>', methods=['GET'])
 def findByIdPagamento(id):
     return json.dumps(service.findById(id))
+
+@app.route('/pagamento/<id>', methods=['DELETE'])
+def deletePagamento(id):
+    service.delete(id)
+    return '', 204

@@ -7,17 +7,17 @@ class ItensPedidoService:
     def findByIdPedido(self, id):
         return dao.findItensPedidoById(id)
 
-    def insert(self, listItensPedido, idPedido):
+    def insert(self, listItensPedido, idPedido, connection):
         if self.__listaDeItensEhValida(listItensPedido):
-            dao.save(listItensPedido, idPedido)
+            dao.save(listItensPedido, idPedido, connection)
 
-    def update(self, listItensPedido, idPedido):
+    def update(self, listItensPedido, idPedido, connection):
         if self.__listaDeItensEhValida(listItensPedido):
-            self.delete(idPedido)
-            self.insert(listItensPedido, idPedido)
+            self.delete(idPedido,connection)
+            self.insert(listItensPedido, idPedido, connection)
 
-    def delete (self, idPedido):
-        dao.delete(idPedido)
+    def delete (self, idPedido, connection):
+        dao.delete(idPedido, connection)
 
     def __listaDeItensEhValida(self, listItensPedido):
         if len(listItensPedido) == 0:

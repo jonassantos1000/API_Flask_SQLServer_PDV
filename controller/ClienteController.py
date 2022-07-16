@@ -4,6 +4,7 @@ from service.ClienteService import *
 from model.Cliente import Cliente
 from server import server
 
+
 service = ClienteService()
 app = server.app
 
@@ -23,10 +24,7 @@ def findAll():
 @app.route('/cliente', methods=['POST'])
 def insert():
     jsonClient = request.get_json()
-    nome = jsonClient['nome']
-    endereco = jsonClient['endereco']
-    telefone = jsonClient['telefone']
-    cliente = Cliente(None, nome, endereco, telefone)
+    cliente = popularObjeto(jsonClient)
     service.insert(cliente)
     return '', 201
 
@@ -40,9 +38,15 @@ def delete(id):
 @app.route('/cliente/<id>', methods=['PUT'])
 def update(id):
     jsonClient = request.get_json()
-    nome = jsonClient['nome']
-    endereco = jsonClient['endereco']
-    telefone = jsonClient['telefone']
-    cliente = Cliente(None, nome, endereco, telefone)
+    cliente = popularObjeto(jsonClient)
     service.update(id, cliente)
     return ''
+
+def popularObjeto(jsonClient):
+    try:
+        nome = jsonClient['nome']
+        endereco = jsonClient['endereco']
+        telefone = jsonClient['telefone']
+        return Cliente(None, nome, endereco, telefone)
+    except KeyError as error:
+        raise IllegalArgument('JSON INVALIDO', f'O JSON INFORMADO NÃO TEM O CAMPO {error.__str__()}, POR FAVOR REALIZE O AJUSTE E TENTE NOVAMENTE !')
