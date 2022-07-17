@@ -1,0 +1,800 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Documentacao da API de E-COMMERCE",
+    "version": "1.0.0",
+    "title": "ERP E-COMMERCE",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ERP E-COMMERCE - DOCUMENTAÇÃO",
+      "description": "Utilize os endpoints a seguir para validar e conhecer melhor a API"
+    }
+  ],
+  "paths": {
+    "/cliente": {
+      "get": {
+        "tags": [
+          "Cliente Request"
+        ],
+        "summary": "Retorna todos os cliente",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/cliente"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Cliente Request"
+        ],
+        "summary": "Cria um novo cliente",
+        "requestBody": {
+          "description": "Objeto cliente para POST",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cliente"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          },
+          "400": {
+            "description": "JSON INVALIDO"
+          }
+        }
+      }
+    },
+    "/cliente/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID do cliente que deseja procurar",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Cliente Request"
+        ],
+        "summary": "Retorna o cliente pelo ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id do cliente",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/cliente"
+            }
+          },
+          "400": {
+            "description": "Id Invalido"
+          }
+        }
+      },
+      "put": {
+        "summary": "Altera um cliente pelo id",
+        "tags": [
+          "Cliente Request"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID do cliente é necessário",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Objeto do cliente que se espera receber",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cliente"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "JSON INVALIDO / ID INVALIDO"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deleta cliente pelo ID",
+        "tags": [
+          "Cliente Request"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID do cliente é necessário",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "ID Inválido"
+          }
+        }
+      }
+    },
+    "/produto": {
+      "get": {
+        "tags": [
+          "Produto Request"
+        ],
+        "summary": "Retorna todos os produtos",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/produto"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Cria um produto",
+        "tags": [
+          "Produto Request"
+        ],
+        "requestBody": {
+          "description": "Objeto do produto que se espera receber",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/produto"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          },
+          "400": {
+            "description": "JSON INVALIDO / ID INVALIDO"
+          }
+        }
+      }
+    },
+    "/produto/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID do produto que deseja procurar",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Produto Request"
+        ],
+        "summary": "Retorna o produto pelo ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id do produto",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/produto"
+            }
+          },
+          "400": {
+            "description": "Id Invalido"
+          }
+        }
+      },
+      "put": {
+        "summary": "Altera um produto pelo id",
+        "tags": [
+          "Produto Request"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID do produto é necessário",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Objeto do produto que se espera receber",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/produto"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "JSON INVALIDO / ID INVALIDO"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deleta produto pelo ID",
+        "tags": [
+          "Produto Request"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID do produto é necessário",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "ID Inválido"
+          }
+        }
+      }
+    },
+    "/pedido": {
+      "get": {
+        "tags": [
+          "Pedido Request"
+        ],
+        "summary": "Retorna todos os pedidos",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/pedido"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Cria um pedido",
+        "tags": [
+          "Pedido Request"
+        ],
+        "requestBody": {
+          "description": "Objeto do pedido que se espera receber",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/pedido"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          },
+          "400": {
+            "description": "JSON INVALIDO"
+          }
+        }
+      }
+    },
+    "/pedido/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID do pedido que deseja procurar",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Pedido Request"
+        ],
+        "summary": "Retorna o pedido pelo ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id do pedido",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/pedido"
+            }
+          },
+          "400": {
+            "description": "Id Invalido"
+          }
+        }
+      },
+      "put": {
+        "summary": "Altera um pedido pelo id",
+        "tags": [
+          "Pedido Request"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID do pedido é necessário",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Objeto do pedido que se espera receber",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/pedido"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "JSON INVALIDO / ID INVALIDO"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deleta pedido pelo ID",
+        "tags": [
+          "Pedido Request"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID do pedido é necessário",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "ID Inválido"
+          }
+        }
+      }
+    },
+    "/pagamento": {
+      "get": {
+        "tags": [
+          "Pagamento Request"
+        ],
+        "summary": "Retorna todos os pagamentos",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/pagamento"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Cria um pagamento",
+        "tags": [
+          "Pagamento Request"
+        ],
+        "requestBody": {
+          "description": "Objeto do pagamento que se espera receber",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/pagamento"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          },
+          "400": {
+            "description": "JSON INVALIDO"
+          }
+        }
+      }
+    },
+    "/pagamento/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID do pagamento que deseja procurar",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Pagamento Request"
+        ],
+        "summary": "Retorna o pagamento pelo ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id do pagamento",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/pagamento"
+            }
+          },
+          "400": {
+            "description": "Id Invalido"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deleta pagamento pelo ID",
+        "tags": [
+          "Pagamento Request"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID do pagamento é necessário",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "ID Inválido"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "id": {
+        "properties": {
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      "cliente": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "format": "string"
+          },
+          "endereco": {
+            "type": "string",
+            "format": "string"
+          },
+          "telefone": {
+            "type": "string",
+            "format": "string"
+          }
+        },
+        "required": ["nome","endereco", "telefone"]
+      },
+      "produto": {
+        "type": "object",
+        "properties": {
+          "descricao": {
+            "type": "string",
+            "format": "string"
+          },
+          "preco": {
+            "type": "number",
+            "format": "number"
+          }
+        },
+        "required": ["desricao","preco"]
+      },
+      "pedido": {
+        "type": "object",
+        "properties": {
+          "cliente": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "nome": {
+                "type": "string",
+                "format": "string"
+              },
+              "endereco": {
+                "type": "string",
+                "format": "string"
+              },
+              "telefone": {
+                "type": "string",
+                "format": "string"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "valorTotal": {
+            "type": "number",
+            "format": "number"
+          },
+          "dataVenda": {
+            "type": "string",
+            "format": "string"
+          },
+          "itensPedido": {
+            "type": "array",
+            "items": {
+              "minItems": 0,
+              "type": "object",
+              "required": [
+                "precoUnitario",
+                "quantidade",
+                "total"
+              ],
+              "properties": {
+                "produto": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "descricao": {
+                      "type": "string"
+                    },
+                    "preco": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                },
+                "precoUnitario": {
+                  "type": "number",
+                  "format": "number"
+                },
+                "quantidade": {
+                  "type": "number",
+                  "format": "number"
+                },
+                "total": {
+                  "type": "number",
+                  "format": "number"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "valorTotal",
+          "dataVenda"
+        ]
+      },
+      "pagamento": {
+        "type": "object",
+        "properties": {
+          "dataPagamento": {
+            "type": "string",
+            "format": "string"
+          },
+          "pedido": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "format": "number"
+              },
+              "cliente": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number"
+                  },
+                  "nome": {
+                    "type": "string",
+                    "format": "string"
+                  },
+                  "endereco": {
+                    "type": "string",
+                    "format": "string"
+                  },
+                  "telefone": {
+                    "type": "string",
+                    "format": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "valorTotal": {
+                "type": "number",
+                "format": "number"
+              },
+              "dataVenda": {
+                "type": "string",
+                "format": "string"
+              },
+              "itensPedido": {
+                "type": "array",
+                "items": {
+                  "minItems": 0,
+                  "type": "object",
+                  "required": [
+                    "precoUnitario",
+                    "quantidade",
+                    "total"
+                  ],
+                  "properties": {
+                    "produto": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "descricao": {
+                          "type": "string"
+                        },
+                        "preco": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ]
+                    },
+                    "precoUnitario": {
+                      "type": "number",
+                      "format": "number"
+                    },
+                    "quantidade": {
+                      "type": "number",
+                      "format": "number"
+                    },
+                    "total": {
+                      "type": "number",
+                      "format": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "required": [
+              "valorTotal",
+              "dataVenda",
+              "id"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

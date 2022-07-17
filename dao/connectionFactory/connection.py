@@ -2,7 +2,7 @@ import configparser
 import pyodbc
 
 cfg = configparser.ConfigParser()
-cfg.read('datasource.ini')
+cfg.read('config/datasource.ini')
 
 def connection():
     server = cfg.get('datasource', 'server')

@@ -4,7 +4,6 @@ from service.ClienteService import *
 from model.Cliente import Cliente
 from server import server
 
-
 service = ClienteService()
 app = server.app
 
@@ -42,6 +41,7 @@ def update(id):
     service.update(id, cliente)
     return ''
 
+
 def popularObjeto(jsonClient):
     try:
         nome = jsonClient['nome']
@@ -49,4 +49,5 @@ def popularObjeto(jsonClient):
         telefone = jsonClient['telefone']
         return Cliente(None, nome, endereco, telefone)
     except KeyError as error:
-        raise IllegalArgument('JSON INVALIDO', f'O JSON INFORMADO NÃO TEM O CAMPO {error.__str__()}, POR FAVOR REALIZE O AJUSTE E TENTE NOVAMENTE !')
+        raise IllegalArgument('JSON INVALIDO',
+                              f'O JSON INFORMADO NÃO TEM O CAMPO {error.__str__()}, POR FAVOR REALIZE O AJUSTE E TENTE NOVAMENTE !')

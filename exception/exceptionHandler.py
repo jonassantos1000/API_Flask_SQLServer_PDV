@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, make_response
 
 from exception.IllegalArgument import *
 from exception.IntegrityError import *
@@ -24,3 +24,4 @@ def handle_bad_request(err):
     response = {"error": err.description, "message": err.args[1]}
     app.logger.error
     return jsonify(response), err.code
+
