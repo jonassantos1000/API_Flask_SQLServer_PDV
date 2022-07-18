@@ -3,6 +3,7 @@ from flask import request
 from service.ClienteService import *
 from model.Cliente import Cliente
 from server import server
+from validators.clienteValidator import *
 
 service = ClienteService()
 app = server.app
@@ -20,7 +21,8 @@ def findAll():
     return json.dumps(list)
 
 
-@app.route('/cliente', methods=['POST'])
+@app.route('/cliente', methods=['POST'], endpoint='insert')
+@checar_cliente
 def insert():
     jsonClient = request.get_json()
     cliente = popularObjeto(jsonClient)
@@ -34,7 +36,8 @@ def delete(id):
     return '', 204
 
 
-@app.route('/cliente/<id>', methods=['PUT'])
+@app.route('/cliente/<id>', methods=['PUT'], endpoint='update')
+@checar_cliente
 def update(id):
     jsonClient = request.get_json()
     cliente = popularObjeto(jsonClient)
@@ -43,11 +46,7 @@ def update(id):
 
 
 def popularObjeto(jsonClient):
-    try:
-        nome = jsonClient['nome']
-        endereco = jsonClient['endereco']
-        telefone = jsonClient['telefone']
-        return Cliente(None, nome, endereco, telefone)
-    except KeyError as error:
-        raise IllegalArgument('JSON INVALIDO',
-                              f'O JSON INFORMADO NÃO TEM O CAMPO {error.__str__()}, POR FAVOR REALIZE O AJUSTE E TENTE NOVAMENTE !')
+    nome = jsonClient['nome']
+    endereco = jsonClient['endereco']
+    telefone = jsonClient['telefone']
+    return Cliente(None, nome, endereco, telefone)

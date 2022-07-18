@@ -59,12 +59,12 @@ class PagamentoDAO:
     def findById(self, id):
         try:
             self.geraCursor()
-            self._cursor.execute(select + ' where tp.id=?', id)
+            self._cursor.execute(select + ' where tp.pedido_venda_id=?', id)
             row = self._cursor.fetchone()
             if row:
                 return self.popularObjeto(row)
-            logging.error(f'Não foi possivel encontrar um recurso pagamento com o id {id}')
-            raise IllegalArgument('Id Invalido', f'Não foi possivel encontrar um recurso pagamento com o id {id}')
+            logging.error(f'Não foi possivel encontrar um pagamento para o pedido com id {id}')
+            raise IllegalArgument('Id Invalido', f'Não foi possivel encontrar um pagamento para o pedido com id {id}')
         finally:
             logging.info(f'METODO findById FINALIZADO')
             self.finalizarConexao()
@@ -73,7 +73,7 @@ class PagamentoDAO:
         try:
             self.geraCursor()
             logging.info('METODO DELETE DE PagamentoDAO INICIADO')
-            self._cursor.execute('DELETE FROM estudos.tb_pagamento where id = ?', id)
+            self._cursor.execute('DELETE FROM estudos.tb_pagamento where pedido_venda_id = ?', id)
             self._cursor.commit()
         except Exception as error:
             logging.error(f"ERRO AO PROCESSAR METODO delete DE PagamentoDAO: {error.args}")

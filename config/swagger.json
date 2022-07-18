@@ -515,7 +515,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "ID do pagamento que deseja procurar",
+          "description": "ID do pedido que deseja procurar pagamento",
           "type": "string"
         }
       ],
@@ -523,13 +523,13 @@
         "tags": [
           "Pagamento Request"
         ],
-        "summary": "Retorna o pagamento pelo ID",
+        "summary": "Retorna o pagamento pelo ID do pedido",
         "parameters": [
           {
             "in": "path",
             "name": "id",
             "required": true,
-            "description": "Id do pagamento",
+            "description": "Id do pedido",
             "schema": {
               "$ref": "#/components/schemas/id"
             }
@@ -548,7 +548,7 @@
         }
       },
       "delete": {
-        "summary": "Deleta pagamento pelo ID",
+        "summary": "Deleta pagamento pelo ID do pedido",
         "tags": [
           "Pagamento Request"
         ],
@@ -557,7 +557,7 @@
             "in": "path",
             "name": "id",
             "required": true,
-            "description": "ID do pagamento é necessário",
+            "description": "ID do pedido é necessário",
             "schema": {
               "$ref": "#/components/schemas/id"
             }
