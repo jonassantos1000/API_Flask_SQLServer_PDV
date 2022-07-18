@@ -585,32 +585,37 @@
       },
       "cliente": {
         "type": "object",
+        "required": ["nome","endereco", "telefone"],
         "properties": {
           "nome": {
             "type": "string",
-            "format": "string"
+            "format": "string",
+            "example": "Jonas Santos"
           },
           "endereco": {
             "type": "string",
-            "format": "string"
+            "format": "string",
+            "example": "Avenida pinheiro, 50"
           },
           "telefone": {
             "type": "string",
-            "format": "string"
+            "format": "string",
+            "example": "(11) 98778-3399"
           }
-        },
-        "required": ["nome","endereco", "telefone"]
+        }
       },
       "produto": {
         "type": "object",
         "properties": {
           "descricao": {
             "type": "string",
-            "format": "string"
+            "format": "string",
+            "example": "Blusa Nike - Preto"
           },
           "preco": {
             "type": "number",
-            "format": "number"
+            "format": "number",
+            "example": 250.0
           }
         },
         "required": ["desricao","preco"]
@@ -622,19 +627,23 @@
             "type": "object",
             "properties": {
               "id": {
-                "type": "number"
+                "type": "number",
+                "example": 1
               },
               "nome": {
                 "type": "string",
-                "format": "string"
+                "format": "string",
+                "example": "Jonas Santos"
               },
               "endereco": {
                 "type": "string",
-                "format": "string"
+                "format": "string",
+                "example": "Avenida pinheiros, 50"
               },
               "telefone": {
                 "type": "string",
-                "format": "string"
+                "format": "string",
+                "example": "(11) 97585-4332"
               }
             },
             "required": [
@@ -643,11 +652,119 @@
           },
           "valorTotal": {
             "type": "number",
-            "format": "number"
+            "format": "number",
+            "example": 300.0
           },
           "dataVenda": {
             "type": "string",
-            "format": "string"
+            "format": "string",
+            "example": "2022-07-18"
+          },
+          "itensPedido": {
+            "type": "array",
+            "items": {
+              "minItems": 0,
+              "type": "object",
+              "required": [
+                "precoUnitario",
+                "quantidade",
+                "total",
+                "produto"
+              ],
+              "properties": {
+                "produto": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "descricao": {
+                      "type": "string",
+                      "example": "Tenis Mizuno - Vermelho"
+                    },
+                    "preco": {
+                      "type": "number",
+                      "example": 300.0
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                },
+                "precoUnitario": {
+                  "type": "number",
+                  "format": "number",
+                  "example": 300.0
+                },
+                "quantidade": {
+                  "type": "number",
+                  "format": "number",
+                  "example": 1
+                },
+                "total": {
+                  "type": "number",
+                  "format": "number",
+                  "example": 300.0
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "valorTotal",
+          "dataVenda",
+          "cliente",
+          "itensPedido"
+        ]
+      },
+      "pagamento": {
+        "type": "object",
+        "properties": {
+          "dataPagamento": {
+            "type": "string",
+            "format": "string",
+            "example": "2022-07-20"
+          },
+          "pedido": {
+        "type": "object",
+        "properties": {
+          "cliente": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 1
+              },
+              "nome": {
+                "type": "string",
+                "format": "string",
+                "example": "Jonas Santos"
+              },
+              "endereco": {
+                "type": "string",
+                "format": "string",
+                "example": "Avenida pinheiros, 50"
+              },
+              "telefone": {
+                "type": "string",
+                "format": "string",
+                "example": "(11) 97585-4332"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "valorTotal": {
+            "type": "number",
+            "format": "number",
+            "example": 300.0
+          },
+          "dataVenda": {
+            "type": "string",
+            "format": "string",
+            "example": "2022-07-18"
           },
           "itensPedido": {
             "type": "array",
@@ -664,13 +781,16 @@
                   "type": "object",
                   "properties": {
                     "id": {
-                      "type": "number"
+                      "type": "number",
+                      "example": 1
                     },
                     "descricao": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Tenis Mizuno - Vermelho"
                     },
                     "preco": {
-                      "type": "number"
+                      "type": "number",
+                      "example": 300.0
                     }
                   },
                   "required": [
@@ -679,15 +799,18 @@
                 },
                 "precoUnitario": {
                   "type": "number",
-                  "format": "number"
+                  "format": "number",
+                  "example": 300.0
                 },
                 "quantidade": {
                   "type": "number",
-                  "format": "number"
+                  "format": "number",
+                  "example": 1
                 },
                 "total": {
                   "type": "number",
-                  "format": "number"
+                  "format": "number",
+                  "example": 300.0
                 }
               }
             }
@@ -695,105 +818,13 @@
         },
         "required": [
           "valorTotal",
-          "dataVenda"
+          "dataVenda",
+          "cliente",
+          "itensPedido"
         ]
-      },
-      "pagamento": {
-        "type": "object",
-        "properties": {
-          "dataPagamento": {
-            "type": "string",
-            "format": "string"
-          },
-          "pedido": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "number",
-                "format": "number"
-              },
-              "cliente": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "number"
-                  },
-                  "nome": {
-                    "type": "string",
-                    "format": "string"
-                  },
-                  "endereco": {
-                    "type": "string",
-                    "format": "string"
-                  },
-                  "telefone": {
-                    "type": "string",
-                    "format": "string"
-                  }
-                },
-                "required": [
-                  "id"
-                ]
-              },
-              "valorTotal": {
-                "type": "number",
-                "format": "number"
-              },
-              "dataVenda": {
-                "type": "string",
-                "format": "string"
-              },
-              "itensPedido": {
-                "type": "array",
-                "items": {
-                  "minItems": 0,
-                  "type": "object",
-                  "required": [
-                    "precoUnitario",
-                    "quantidade",
-                    "total"
-                  ],
-                  "properties": {
-                    "produto": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "number"
-                        },
-                        "descricao": {
-                          "type": "string"
-                        },
-                        "preco": {
-                          "type": "number"
-                        }
-                      },
-                      "required": [
-                        "id"
-                      ]
-                    },
-                    "precoUnitario": {
-                      "type": "number",
-                      "format": "number"
-                    },
-                    "quantidade": {
-                      "type": "number",
-                      "format": "number"
-                    },
-                    "total": {
-                      "type": "number",
-                      "format": "number"
-                    }
-                  }
-                }
-              }
-            },
-            "required": [
-              "valorTotal",
-              "dataVenda",
-              "id"
-            ]
-          }
-        }
+      }
+        },
+        "required": ["dataPagamento","pedido"]
       }
     }
   }
