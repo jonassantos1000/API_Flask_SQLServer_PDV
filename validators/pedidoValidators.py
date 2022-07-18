@@ -3,10 +3,10 @@ from flask import request, jsonify
 from exception.exceptionHandler import *
 
 
-def checar_cliente(f):
+def checar_pedido(f):
     wraps(f)
 
-    def validacoesCliente(*args, **kwargs):
+    def validacoesPedido(*args, **kwargs):
         json = request.get_json()
 
         # Valida se os campos do json são diferentes de branco e null
@@ -23,4 +23,4 @@ def checar_cliente(f):
             raise IllegalArgument('JSON INVALIDO',
                                   f'O JSON INFORMADO NÃO TEM O CAMPO {error.__str__()}, POR FAVOR REALIZE O AJUSTE E TENTE NOVAMENTE !')
 
-    return (validacoesCliente)
+    return (validacoesPedido)
