@@ -4,7 +4,7 @@ from flask import request
 from service.PagamentoService import *
 from model.Pagamento import Pagamento
 from model.Pedido import *
-from validators.pagamentoValidator import checar_pagamento
+from validator.pagamentoValidator import checar_pagamento
 
 app = server.app
 service = PagamentoService()

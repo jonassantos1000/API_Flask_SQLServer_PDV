@@ -39,9 +39,8 @@ def test_deveria_encontrar_produto_pelo_id(client):
     descricao = response.json()['descricao']
 
     assert 200 == response.status_code
-    assert 'Matheus Vieira' == nome
-    assert 'Rua do amaral' == endereco
-
+    assert 2 == id
+    assert 'Bone nike preto' == descricao
 
 def test_nao_deveria_encontrar_produto_com_id_inexistente(client):
     response = requests.get(f'{url}/0')

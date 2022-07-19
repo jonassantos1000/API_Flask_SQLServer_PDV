@@ -4,7 +4,7 @@ from model.Pedido import Pedido
 from model.Cliente import Cliente
 from model.ItensPedido import *
 from service.PedidoService import PedidoService
-from validators.pedidoValidators import *
+from validator.pedidoValidators import *
 import json
 
 app = server.app

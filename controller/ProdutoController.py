@@ -3,7 +3,7 @@ from flask import request
 from service.ProdutoService import *
 from model.Produto import *
 from server import server
-from validators.produtoValidators import *
+from validator.produtoValidators import *
 
 service = ProdutoService()
 app = server.app

@@ -4,7 +4,7 @@ from flask import request
 from service.ClienteService import *
 from model.Cliente import Cliente
 from server import server
-from validators.clienteValidator import *
+from validator.clienteValidator import *
 
 service = ClienteService()
 app = server.app
