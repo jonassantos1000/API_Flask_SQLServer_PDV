@@ -17,10 +17,9 @@ def checar_cliente(f):
                     response = {"Error": "Falha na requisição",
                                 "Motivo": f"O campo '{elemento}' esta em branco ou não existe"}
                     return jsonify(response), 400
-
             return f(*args, **kwargs)
         except KeyError as error:
             raise IllegalArgument('JSON INVALIDO',
                                   f'O JSON INFORMADO NÃO TEM O CAMPO {error.__str__()}, POR FAVOR REALIZE O AJUSTE E TENTE NOVAMENTE !')
 
-    return (validacoesCliente)
+    return(validacoesCliente)

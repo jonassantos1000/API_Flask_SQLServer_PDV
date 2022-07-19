@@ -13,8 +13,13 @@ service = PedidoService()
 
 @app.route('/pedido', methods=['GET'])
 def findAllPedido():
-    return json.dumps(service.findAll())
-
+    list = service.findAll()
+    response = app.response_class(
+        response=json.dumps(list),
+        status=200,
+        mimetype='*application/json'
+    )
+    return response
 
 @app.route('/pedido', methods=['POST'], endpoint='insertPedido')
 @checar_pedido
@@ -36,8 +41,21 @@ def updatePedido(id):
 
 @app.route('/pedido/<id>', methods=['GET'])
 def findByIdPedido(id):
-    return json.dumps(service.findById(id))
+    response = app.response_class(
+        response=json.dumps(service.findById(id)),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
+@app.route('/pedido/cliente/<id>', methods=['GET'])
+def findPedidoByIdCliente(id):
+    response = app.response_class(
+        response=json.dumps(service.findByIdCliente(id)),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 @app.route('/pedido/<id>', methods=['DELETE'])
 def deletePedido(id):

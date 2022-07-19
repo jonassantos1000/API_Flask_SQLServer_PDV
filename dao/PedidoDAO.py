@@ -53,6 +53,28 @@ class PedidoDAO:
             logging.info('METODO findById DE PedidoDAO Finalizado')
             self.finalizaConexao()
 
+    def findByIdCliente(self, id):
+        try:
+            self.gerarCursor()
+            logging.info('INICIANDO METODO findByIdCliente de PedidoDAO')
+            listItensPedido = []
+            logging.info('INICIANDO SELECT PARA BUSCAR ITENS DO PEDIDO')
+
+            self._cursor.execute(select + ' where pv.cliente_id = ?', id)
+            listPedidos = []
+            row = self._cursor.fetchone()
+            while row:
+                listPedidos.append(self.populaObjeto(row))
+                row = self._cursor.fetchone()
+
+            return listPedidos
+        except Exception as error:
+            logging.error("OCORREU UM ERRO DURANTE A EXECUÇÃO DO METODO FindByIdCliente")
+            raise BadRequest("Falha na requisição", f"Error: {error.args}")
+        finally:
+            logging.info('METODO findById DE PedidoDAO Finalizado')
+            self.finalizaConexao()
+
     def findAll(self):
         try:
             self.gerarCursor()

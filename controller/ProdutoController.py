@@ -12,7 +12,12 @@ app = server.app
 @app.route('/produto', methods=['GET'])
 def findAllProduto():
     list = service.findAll()
-    return json.dumps(list)
+    response = app.response_class(
+        response=json.dumps(list),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 
 @app.route('/produto', methods=['POST'], endpoint='insertProduto')
@@ -27,7 +32,12 @@ def insertProduto():
 @app.route('/produto/<id>', methods=['GET'])
 def findByIdProduto(id):
     produto = service.findById(id)
-    return json.dumps(produto)
+    response = app.response_class(
+        response=json.dumps(produto),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 
 @app.route('/produto/<id>', methods=['PUT'], endpoint='updateProduto')

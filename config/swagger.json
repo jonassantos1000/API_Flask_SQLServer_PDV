@@ -362,6 +362,42 @@
         }
       }
     },
+    "/pedido/cliente/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID do pedido que deseja procurar",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Pedido Request"
+        ],
+        "summary": "Retorna pedidos pelo ID do cliente",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id do cliente",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/pedido"
+            }
+          }
+        }
+      }
+    },
     "/pedido/{id}": {
       "parameters": [
         {

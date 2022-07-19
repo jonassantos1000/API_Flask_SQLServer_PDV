@@ -11,6 +11,9 @@ class PedidoService:
         if self.__pedidoEhValido(id):
             return dao.findById(id)
 
+    def findByIdCliente(self, id):
+        return dao.findByIdCliente(id)
+
     def findAll(self):
         return dao.findAll()
 

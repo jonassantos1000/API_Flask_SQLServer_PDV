@@ -4,6 +4,7 @@ import pyodbc
 cfg = configparser.ConfigParser()
 cfg.read('config/datasource.ini')
 
+
 def connection():
     server = cfg.get('datasource', 'server')
     database = cfg.get('datasource', 'database')
@@ -11,3 +12,4 @@ def connection():
     password = cfg.get('datasource', 'password')
     cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
     return cnxn
+

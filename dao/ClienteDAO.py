@@ -29,7 +29,7 @@ class ClienteDAO:
         try:
             self.gerarCursor()
             logging.info('INICIANDO METODO findAll DE ClienteDAO')
-            self._cursor.execute(f'select * from estudos.tb_cliente')
+            self._cursor.execute(f'select * from estudos.tb_cliente SET NOCOUNT ON')
             row = self._cursor.fetchone()
             listCliente = []
             while row:

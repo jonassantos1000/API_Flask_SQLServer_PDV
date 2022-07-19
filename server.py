@@ -6,7 +6,7 @@ class Server():
         self.app = Flask(__name__)
 
     def run(self):
-        self.app.run(debug=True)
+        self.app.run(debug=True,threaded=True)
 
 
 server = Server()

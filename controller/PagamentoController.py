@@ -21,12 +21,21 @@ def insertPagamento():
 
 @app.route('/pagamento', methods=['GET'])
 def findAllPagamento():
-    return json.dumps(service.findAll())
-
+    response = app.response_class(
+        response=json.dumps(service.findAll()),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 @app.route('/pagamento/<id>', methods=['GET'])
 def findByIdPagamento(id):
-    return json.dumps(service.findById(id))
+    response = app.response_class(
+        response=json.dumps(service.findById(id)),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 
 @app.route('/pagamento/<id>', methods=['DELETE'])

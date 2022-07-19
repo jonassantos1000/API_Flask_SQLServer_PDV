@@ -1,9 +1,10 @@
-from flask import jsonify, make_response
+from flask import jsonify, make_response, render_template
 
 from exception.IllegalArgument import *
 from exception.IntegrityError import *
 from exception.BadRequest import *
 from server import server
+from werkzeug.exceptions import HTTPException
 
 app = server.app
 
@@ -25,3 +26,20 @@ def handle_bad_request(err):
     app.logger.error
     return jsonify(response), err.code
 
+@app.errorhandler(404)
+def handle_method_not_allowed(err):
+    response = {"error": "NOT FOUND", "message": "NÃO FOI POSSIVEL ENCONTRAR UM RECURSO VÁLIDO PARA ESTE ENDPOINT"}
+    app.logger.error
+    return jsonify(response), err.code
+
+@app.errorhandler(405)
+def handle_method_not_allowed(err):
+    response = {"error": "METHOD NOT ALLOWED", "message": "ESTE ENDPOINT NÃO POSSUI FUNCIONALIDADE PARA ESTA OPERAÇÃO"}
+    app.logger.error
+    return jsonify(response), err.code
+
+@app.errorhandler(500)
+def handle_method_not_allowed(err):
+    response = {"error": "FALHA NA REQUISIÇÃO", "message": "OCORREU UM ERRO DURANTE A REQUISIÇÃO"}
+    app.logger.error
+    return jsonify(response), 400
