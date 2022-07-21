@@ -1,7 +1,8 @@
 class PagamentoDTO:
-    def __init__(self, id, dataPagamento):
+    def __init__(self, id, dataPagamento, status=None):
         self._id = id
         self._dataPagamento = dataPagamento
+        self._status = status
 
     @property
     def id(self):
@@ -10,6 +11,10 @@ class PagamentoDTO:
     @property
     def dataPagamento(self):
         return self._dataPagamento
+
+    @property
+    def status(self):
+        return self._status
 
     def dict(self):
         pagamento={}

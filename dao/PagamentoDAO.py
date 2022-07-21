@@ -15,86 +15,75 @@ serviceItens = ItensPedidoService()
 
 class PagamentoDAO:
     def __init__(self):
-        self._connection = None
-        self._cursor = None
+        self._connection = connection()
 
     def save(self, pagamento):
+        cursor = self._connection.cursor()
         try:
             logging.info('METODO SAVE DE PagamentoDAO INICIADO')
-            self.geraCursor()
-            self._cursor.execute('''insert into estudos.tb_pagamento (pedido_venda_id, data_pagamento) values (?,?)''',
+            cursor.execute('''insert into estudos.tb_pagamento (pedido_venda_id, data_pagamento) values (?,?)''',
                                  pagamento.pedido.id, pagamento.dataPagamento)
-            self._cursor.commit()
-        except pyodbc.IntegrityError as error:
-            logging.error(f"ERRO AO PROCESSAR METODO save DE PagamentoDAO: {error.args}")
-            self._cursor.rollback()
-            logging.error(f"FOI REALIZADO O ROLLBACK NO METODO save DE PagamentoDAO")
-            raise IntegrityError('Violação de constraint',
-                                 'Operação não suportada, pois, este pedido já possui pagamento vinculado')
+            cursor.commit()
         except Exception as error:
-            logging.error(f"ERRO AO PROCESSAR METODO save DE PagamentoDAO: {error.args}")
-            self._cursor.rollback()
-            logging.error(f"FOI REALIZADO O ROLLBACK NO METODO save DE PagamentoDAO")
+            logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO SAVE DA ENTIDADE PAGAMENTODAO, ERRO:\n {error.args}')
+            raise BadRequest('FALHA NA REQUISIÇÃO', 'PARAMETROS INVALIDOS, VERIFIQUE AS INFORMAÇÕES')
+            cursor.rollback()
+            cursor.cancel()
         finally:
             logging.info('METODO SAVE DE PagamentoDAO FINALIZADO')
-            self.finalizarConexao()
+            cursor.close()
 
     def findAll(self):
+        cursor = self._connection.cursor()
         try:
-            self.geraCursor()
             logging.info('METODO findAll de PagamentoDAO INICIADO')
-            self._cursor.execute(select)
-            row = self._cursor.fetchone()
+            cursor.execute(select)
+            row = cursor.fetchone()
             listPagamentos = []
             while row:
                 listPagamentos.append(self.popularObjeto(row))
-                row = self._cursor.fetchone()
+                row = cursor.fetchone()
             return listPagamentos
         except Exception as error:
             logging.error(f"ERRO AO PROCESSAR METODO findAll DE PagamentoDAO: {error.args}")
+            cursor.cancel()
         finally:
             logging.info('METODO findAll de PagamentoDAO FINALIZADO')
-            self.finalizarConexao()
+            cursor.close()
 
     def findById(self, id):
         try:
-            self.geraCursor()
-            self._cursor.execute(select + ' where tp.pedido_venda_id=?', id)
-            row = self._cursor.fetchone()
+            cursor = self._connection.cursor()
+            cursor.execute(select + ' where tp.pedido_venda_id=?', id)
+            row = cursor.fetchone()
             if row:
                 return self.popularObjeto(row)
             logging.error(f'Não foi possivel encontrar um pagamento para o pedido com id {id}')
-            raise IllegalArgument('Id Invalido', f'Não foi possivel encontrar um pagamento para o pedido com id {id}')
+            raise NotFound('Id Invalido', f'Não foi possivel encontrar um pagamento para o pedido com id {id}')
         finally:
             logging.info(f'METODO findById FINALIZADO')
-            self.finalizarConexao()
+            cursor.close()
 
     def delete(self, id):
         try:
-            self.geraCursor()
+            cursor = self._connection.cursor()
             logging.info('METODO DELETE DE PagamentoDAO INICIADO')
-            self._cursor.execute('DELETE FROM estudos.tb_pagamento where pedido_venda_id = ?', id)
-            self._cursor.commit()
+            cursor.execute('DELETE FROM estudos.tb_pagamento where pedido_venda_id = ?', id)
+            cursor.commit()
         except Exception as error:
             logging.error(f"ERRO AO PROCESSAR METODO delete DE PagamentoDAO: {error.args}")
-            self._cursor.rollback()
+            cursor.rollback()
+            cursor.cancel()
             logging.error(f"FOI REALIZADO O ROLLBACK NO METODO delete DE PagamentoDAO")
         finally:
             logging.info('METODO DELETE DE PagamentoDAO FINALIZADO')
-            self.finalizarConexao()
-
-    def geraCursor(self):
-        self._connection = connection()
-        self._cursor = self._connection.cursor()
-
-    def finalizarConexao(self):
-        self._cursor.close()
+            cursor.close()
 
     def popularObjeto(self, row):
         cliente = Cliente(row.cliente_id, row.nome, row.endereco, row.telefone).dict()
         listItens = serviceItens.findByIdPedido(row.pedido_id)
         pedido = Pedido(row.pedido_id, cliente, float(row.valor_total), str(row.data_venda),
-                        PagamentoDTO(row.pagamento_id, str(row.data_pagamento)).dict(), listItens).dict()
+                        PagamentoDTO(row.pagamento_id, str(row.data_pagamento),"PAGO").dict(), listItens).dict()
         return Pagamento(row.pagamento_id, pedido, str(row.data_pagamento)).dict()
 
 

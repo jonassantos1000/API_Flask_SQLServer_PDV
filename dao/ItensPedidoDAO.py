@@ -9,14 +9,13 @@ logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
 
 class ItensPedidoDAO:
     def __init__(self):
-        self._connection = None
-        self._cursor = None
+        self._connection = connection()
 
     def findItensPedidoById(self, pedidoId):
+        logging.info('METODO findItensPedidoById INICIADO')
+        cursor = self._connection.cursor()
         try:
-            self.gerarCursor()
-            logging.info('METODO findItensPedidoById INICIADO')
-            self._cursor.execute('''
+            cursor.execute('''
                                     SELECT 
                                     tip.id, tip.produto_id, tip.preco_unitario,tip.quantidade, tip.total,
                                     tp.descricao, tp.preco
@@ -24,13 +23,13 @@ class ItensPedidoDAO:
                                     INNER JOIN estudos.tb_produto tp ON (tip.produto_id = tp.id)
                                     INNER JOIN estudos.pedido_venda pv ON (tip.pedido_venda_id = pv.id)
                                     where tip.pedido_venda_id = ?''', pedidoId)
-            row = self._cursor.fetchone()
+            row = cursor.fetchone()
             listItens = []
             while row:
                 produto = Produto(row.produto_id, row.descricao, float(row.preco)).dict()
                 item = ItensPedido(row.id, produto, row.quantidade, float(row.preco_unitario), float(row.total)).dict()
                 listItens.append(item)
-                row = self._cursor.fetchone()
+                row = cursor.fetchone()
 
             return listItens
         except Exception as error:
@@ -38,7 +37,7 @@ class ItensPedidoDAO:
                 f"OCORREU UM ERRO DURANTE A EXECUCAO DO METODO findItensPedidoById de ItensPedidoDAO:\n {error.args}")
             raise Exception('OCORREU UM ERRO DURANTE A EXECUCAO DO METODO findItensPedidoById de ItensPedidoDAO')
         finally:
-            self.finalizarConexao()
+            cursor.close()
 
     def save(self, listItem, idPedido, cursor):
         try:
@@ -69,10 +68,3 @@ class ItensPedidoDAO:
                              'NAO FOI POSSIVEL PROSSEGUIR COM A OPERACAO, VERIFIQUE AS INFORMACOES INSERIDAS !')
         finally:
             logging.info("METODO DELETE DE itensPedidoDao FINALIZADO")
-
-    def gerarCursor(self):
-        self._connection = connection()
-        self._cursor = self._connection.cursor()
-
-    def finalizarConexao(self):
-        self._connection.close()

@@ -17,12 +17,13 @@ def checar_pedido(f):
             cliente= pedido['cliente']
             itens = pedido['itensPedido']
 
+            #valida o cliente
             for chave in cliente:
                 if cliente[chave] == "" or cliente[chave] ==None:
                     response = {"Error": "Falha na requisição",
                                 "Motivo": f"O campo '{chave}' de cliente esta em branco ou não existe"}
                     return jsonify(response), 400
-
+            #valida itens do pedido
             for item in itens:
                 for chave in item:
                     if item[chave] == "" or item[chave] ==None:

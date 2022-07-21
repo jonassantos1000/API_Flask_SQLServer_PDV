@@ -21,6 +21,6 @@ class ItensPedidoService:
 
     def __listaDeItensEhValida(self, listItensPedido):
         if len(listItensPedido) == 0:
-            raise IllegalArgument('Pedido Invalido', 'O pedido deve conter pelo menos 1 item')
+            raise ListaDeProdutosVazia('Pedido Invalido', 'O pedido deve conter pelo menos 1 item')
 
         return True

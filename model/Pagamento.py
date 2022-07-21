@@ -1,3 +1,5 @@
+from model.Pedido import *
+
 class Pagamento:
     def __init__(self, id=None, pedido=None, dataPagamento=None):
         self._id = id

@@ -17,46 +17,6 @@ headers = {
     'Content-Type':'application/json'
 }
 
-pagamento = {
-    "dataPagamento": "2022-07-14",
-    "pedido":{
-    "id": 28,
-    "cliente": {
-        "id": 3,
-        "nome": "Bruno",
-        "endereco": "Rua dos pinheiros",
-        "telefone": "(11) 98632-7777"
-    },
-    "valorTotal": 350.0,
-    "dataVenda": "2022-07-14",
-    "pagamento": {},
-    "itensPedido": [
-        {
-            "id": 4,
-            "produto": {
-                "id": 2,
-                "descricao": "Bone nike preto",
-                "preco": 150.0
-            },
-            "quantidade": 1,
-            "precoUnitario": 150.0,
-            "total": 150.0
-        },
-        {
-            "id": 5,
-            "produto": {
-                "id": 3,
-                "descricao": "Camiseta Puma",
-                "preco": 200.0
-            },
-            "quantidade": 1,
-            "precoUnitario": 200.0,
-            "total": 200.0
-        }
-    ]
-    }
-}
-
 @pytest.fixture
 def geraPagamento():
     valorTotal = 150.0
@@ -69,7 +29,7 @@ def geraPagamento():
     listItens = []
     item = ItensPedido(None, produto, quantidade, precoUnitario, total).dict()
     listItens.append(item)
-    pedido = Pedido(30, cliente, valorTotal, dataVenda, {}, listItens).dict()
+    pedido = Pedido(2, cliente, valorTotal, dataVenda, {}, listItens).dict()
     dataPagamento="2022-07-14"
     return Pagamento(None,pedido,dataPagamento).dict()
 
@@ -83,37 +43,32 @@ def client():
 
 def test_deveria_retornar_a_lista_completa_de_pagamento(client):
     response = requests.get(url)
-    pagamento = response.json()[0]
-    dataPagamento = pagamento['dataPagamento']
-    pedido = Pedido(**pagamento['pedido'])
-
     assert 200 == response.status_code
 
 def test_deveria_encontrar_pagamento_pelo_id(client):
-    response = requests.get(f'{url}/30')
-    pagamento = response.json()
-    dataPagamento = pagamento['dataPagamento']
-    pedido = Pedido(**pagamento['pedido'])
+    response = requests.get(f'{url}/1')
 
     assert 200 == response.status_code
 
 def test_nao_deveria_encontrar_pagamento_com_id_inexistente(client):
     response = requests.get(f'{url}/0')
-    assert 400 == response.status_code
+    assert 404 == response.status_code
 
-def test_deveria_apagar_o_pagamento_por_id(client):
-    response = requests.delete(f'{url}/28')
+def test_deveria_excluir_o_pagamento_por_id(client):
+    response = requests.delete(f'{url}/2')
+    print(response.text)
     assert 204 == response.status_code
 
 def test_deveria_retornar_erro_badrequest_ao_tentar_apagar_pagamento_com_id_inexistente(client):
     response = requests.delete(f'{url}/0')
-    assert 400 == response.status_code
+    assert 404 == response.status_code
 
-    def test_deveria_fazer_post_de_pagamento(client, geraPagamento):
-        p = geraPagamento
-        resposta = requests.post(url, headers=headers, data=json.dumps(p))
-        print(resposta.text)
-        assert 201 == resposta.status_code
+def test_deveria_fazer_post_de_pagamento(client, geraPagamento):
+    p = geraPagamento
+    resposta = requests.post(url, headers=headers, data=json.dumps(p))
+    print(resposta.text)
+    assert 201 == resposta.status_code
+
 
 def test_deveria_retornar_badrequest_post_de_pagamento_com_id_pedido_vazio(client, geraPagamento):
     p = geraPagamento

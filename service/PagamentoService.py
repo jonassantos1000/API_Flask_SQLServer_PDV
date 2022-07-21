@@ -19,6 +19,7 @@ class PagamentoService:
 
     def __PagamentoEhValido(self, id):
         pagamento = dao.findById(id)
+        print(pagamento)
         if(pagamento != None):
             return True
         return False

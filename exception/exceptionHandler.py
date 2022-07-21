@@ -1,8 +1,13 @@
+import json
+
 from flask import jsonify, make_response, render_template
+from jsonschema.exceptions import ValidationError
 
 from exception.IllegalArgument import *
 from exception.IntegrityError import *
 from exception.BadRequest import *
+from exception.ListaDeProdutosVazia import *
+from exception.NotFound import *
 from server import server
 from werkzeug.exceptions import HTTPException
 
@@ -22,6 +27,18 @@ def handle_bad_request(err):
 
 @app.errorhandler(BadRequest)
 def handle_bad_request(err):
+    response = {"error": err.description, "message": err.args[1]}
+    app.logger.error
+    return jsonify(response), err.code
+
+@app.errorhandler(ListaDeProdutosVazia)
+def handle_bad_request(err):
+    response = {"error": err.description, "message": err.args[1]}
+    app.logger.error
+    return jsonify(response), err.code
+
+@app.errorhandler(NotFound)
+def handle_not_found(err):
     response = {"error": err.description, "message": err.args[1]}
     app.logger.error
     return jsonify(response), err.code

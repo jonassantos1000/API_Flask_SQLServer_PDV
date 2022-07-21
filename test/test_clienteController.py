@@ -25,27 +25,15 @@ def client():
 
 def test_deveria_retornar_a_lista_completa_de_cliente(client):
     response = requests.get(url)
-    clientes = response.json()[0]
-    nome = clientes['nome']
-    endereco = clientes['endereco']
-
     assert 200 == response.status_code
-    assert 'Matheus Vieira' == nome
-    assert 'Rua do amaral' == endereco
 
 def test_deveria_encontrar_cliente_pelo_id(client):
-    response = requests.get(f'{url}/2')
-    nome = response.json()['nome']
-    endereco = response.json()['endereco']
-
+    response = requests.get(f'{url}/1')
     assert 200 == response.status_code
-    assert 'Matheus Vieira' == nome
-    assert 'Rua do amaral' == endereco
-
 
 def test_nao_deveria_encontrar_cliente_com_id_inexistente(client):
     response = requests.get(f'{url}/0')
-    assert 400 == response.status_code
+    assert 404 == response.status_code
 
 
 def test_deveria_fazer_post_de_cliente(client):
@@ -82,4 +70,4 @@ def test_deveria_apagar_um_cliente(client):
 
 def test_deveria_retornar_erro_ao_tentar_apagar_cliente_com_id_inexistente(client):
     response = requests.delete(f'{url}/0')
-    assert 400 == response.status_code
+    assert 404 == response.status_code

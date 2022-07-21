@@ -27,6 +27,11 @@ class PedidoDAO:
             pedidoId = row.id
             serviceItensPedido.insert(pedido.itensPedido, pedidoId, self._cursor)
             self._cursor.commit()
+        except ListaDeProdutosVazia as error:
+            logging.error(f'REALIZANDO ROLLBACK DO METODO save de PedidoDAO:\n {error.args}')
+            self._cursor.rollback()
+            raise ListaDeProdutosVazia('PEDIDO INVALIDO',
+                             'NAO FOI POSSIVEL PROSSEGUIR COM A OPERACAO, O PEDIDO NÃO CONTEM ITENS VENDIDOS !')
         except Exception as error:
             logging.error(f'REALIZANDO ROLLBACK DO METODO save de PedidoDAO:\n {error.args}')
             self._cursor.rollback()
@@ -48,7 +53,7 @@ class PedidoDAO:
             if row:
                 return self.populaObjeto(row)
             logging.error(f"Pedido com id {id} não encontrado !")
-            raise IllegalArgument('Id Invalido', f"Pedido com id {id} não encontrado !")
+            raise NotFound('Id Invalido', f"Pedido com id {id} não encontrado !")
         finally:
             logging.info('METODO findById DE PedidoDAO Finalizado')
             self.finalizaConexao()
@@ -145,9 +150,9 @@ class PedidoDAO:
     def populaObjeto(self, row):
         itens = serviceItensPedido.findByIdPedido(row.id)
         cliente = Cliente(row.cliente_id, row.nome, row.endereco, row.telefone).dict()
-        pagamento = {}
+        pagamento = {"Status": "PENDENTE"}
         if row.pagamento_id != None:
-            pagamento = PagamentoDTO(row.pagamento_id, str(row.data_pagamento)).dict()
+            pagamento = PagamentoDTO(row.pagamento_id, str(row.data_pagamento), str("PAGO")).dict()
 
         return Pedido(row.id, cliente, float(row.valor_total), str(row.data_venda), pagamento, itens).dict()
 

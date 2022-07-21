@@ -1,5 +1,5 @@
 class Pedido:
-    def __init__(self, id, cliente, valorTotal, dataVenda, pagamento, itensPedido):
+    def __init__(self, id=None, cliente=None, valorTotal=None, dataVenda=None, pagamento=None, itensPedido=None):
         self._id = id
         self._cliente= cliente
         self._valorTotal= valorTotal

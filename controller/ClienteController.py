@@ -5,6 +5,7 @@ from service.ClienteService import *
 from model.Cliente import Cliente
 from server import server
 from validator.clienteValidator import *
+from flask_expects_json import expects_json
 
 service = ClienteService()
 app = server.app
@@ -69,3 +70,6 @@ def validaID(id):
     if id.isdigit():
         return
     raise IllegalArgument('ID Invalido', 'O ID deve conter apenas numeros')
+
+
+

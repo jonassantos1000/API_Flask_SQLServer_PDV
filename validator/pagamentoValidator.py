@@ -13,14 +13,13 @@ def checar_pagamento(f):
         json = request.get_json()
         try:
             pagamento= __populaObjeto(json)
-
             pedido = pagamento['pedido']
             cliente = pagamento['pedido']['cliente']
             itens = pagamento['pedido']['itensPedido']
             dataPagamento = datetime.datetime.strptime(json.get("dataPagamento"), "%Y-%m-%d")
             dataVenda= datetime.datetime.strptime(pedido["dataVenda"], "%Y-%m-%d")
 
-
+            #valida se o pedido id do pedido é valido
             if pedido['id'] == None or pedido['id']=="":
                 response = {"Error": "Falha na requisição",
                             "Motivo": f"O campo id de pedido esta em branco ou não existe"}
@@ -59,7 +58,6 @@ def checar_pagamento(f):
                 response = {"Pagamento": "Reprovado",
                 "motivo":"Data informada é invalida"}
                 return jsonify(response), 400
-
 
             #valida se a data de pagamento é menor que a data de venda
             if dataPagamento < dataVenda:
