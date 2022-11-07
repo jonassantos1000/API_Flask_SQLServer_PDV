@@ -1,11 +1,11 @@
 class Pedido:
-    def __init__(self, id=None, cliente=None, valorTotal=None, dataVenda=None, pagamento=None, itensPedido=None):
+    def __init__(self, id=None, cliente=None, valor_total=None, data_venda=None, pagamento=None, itens_pedido=None):
         self._id = id
         self._cliente= cliente
-        self._valorTotal= valorTotal
-        self._dataVenda= dataVenda
+        self._valor_total= valor_total
+        self._data_venda= data_venda
         self._pagamento = pagamento
-        self._itensPedido = itensPedido
+        self._itens_pedido = itens_pedido
 
 
     @property
@@ -17,23 +17,27 @@ class Pedido:
         return self._cliente
 
     @property
-    def itensPedido(self):
-        return self._itensPedido
+    def itens_pedido(self):
+        return self._itens_pedido
 
     @property
-    def valorTotal(self):
-        return self._valorTotal
+    def valor_total(self):
+        return self._valor_total
 
     @property
-    def dataVenda(self):
-        return self._dataVenda
+    def data_venda(self):
+        return self._data_venda
 
     @property
     def pagamento(self):
         return self._pagamento
 
+    @id.setter
+    def id(self, valor):
+        self._id = valor
+
     def dict(self):
         pedido={}
         for key in self.__dict__:
-            pedido[key.replace('_','')] = self.__dict__.__getitem__(key)
+            pedido[key[1:]] = self.__dict__.__getitem__(key)
         return pedido

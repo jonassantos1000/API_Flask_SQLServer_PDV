@@ -1,7 +1,7 @@
 import pyodbc
 import logging
 from dao.connectionFactory.connection import connection
-from exception.exceptionHandler import *
+from exception.ExceptionHandler import *
 from model.PagamentoDTO import *
 from model.Cliente import *
 from model.Pagamento import *
@@ -22,7 +22,7 @@ class PagamentoDAO:
         try:
             logging.info('METODO SAVE DE PagamentoDAO INICIADO')
             cursor.execute('''insert into estudos.tb_pagamento (pedido_venda_id, data_pagamento) values (?,?)''',
-                                 pagamento.pedido.id, pagamento.dataPagamento)
+                           pagamento.pedido.id, pagamento.data_pagamento)
             cursor.commit()
         except Exception as error:
             logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO SAVE DA ENTIDADE PAGAMENTODAO, ERRO:\n {error.args}')
@@ -33,7 +33,7 @@ class PagamentoDAO:
             logging.info('METODO SAVE DE PagamentoDAO FINALIZADO')
             cursor.close()
 
-    def findAll(self):
+    def find_all(self):
         cursor = self._connection.cursor()
         try:
             logging.info('METODO findAll de PagamentoDAO INICIADO')
@@ -51,7 +51,7 @@ class PagamentoDAO:
             logging.info('METODO findAll de PagamentoDAO FINALIZADO')
             cursor.close()
 
-    def findById(self, id):
+    def find_by_id(self, id):
         try:
             cursor = self._connection.cursor()
             cursor.execute(select + ' where tp.pedido_venda_id=?', id)
@@ -81,7 +81,7 @@ class PagamentoDAO:
 
     def popularObjeto(self, row):
         cliente = Cliente(row.cliente_id, row.nome, row.endereco, row.telefone).dict()
-        listItens = serviceItens.findByIdPedido(row.pedido_id)
+        listItens = serviceItens.find_by_id_pedido(row.pedido_id)
         pedido = Pedido(row.pedido_id, cliente, float(row.valor_total), str(row.data_venda),
                         PagamentoDTO(row.pagamento_id, str(row.data_pagamento),"PAGO").dict(), listItens).dict()
         return Pagamento(row.pagamento_id, pedido, str(row.data_pagamento)).dict()

@@ -686,17 +686,17 @@
               "id"
             ]
           },
-          "valorTotal": {
+          "valor_total": {
             "type": "number",
             "format": "number",
             "example": 300.0
           },
-          "dataVenda": {
+          "data_venda": {
             "type": "string",
             "format": "string",
             "example": "2022-07-18"
           },
-          "itensPedido": {
+          "itens_pedido": {
             "type": "array",
             "items": {
               "minItems": 0,
@@ -728,7 +728,7 @@
                     "id"
                   ]
                 },
-                "precoUnitario": {
+                "preco_unitario": {
                   "type": "number",
                   "format": "number",
                   "example": 300.0
@@ -748,16 +748,16 @@
           }
         },
         "required": [
-          "valorTotal",
-          "dataVenda",
+          "valor_total",
+          "data_venda",
           "cliente",
-          "itensPedido"
+          "itens_pedido"
         ]
       },
       "pagamento": {
         "type": "object",
         "properties": {
-          "dataPagamento": {
+          "data_pagamento": {
             "type": "string",
             "format": "string",
             "example": "2022-07-20"
@@ -792,17 +792,17 @@
               "id"
             ]
           },
-          "valorTotal": {
+          "valor_total": {
             "type": "number",
             "format": "number",
             "example": 300.0
           },
-          "dataVenda": {
+          "data_venda": {
             "type": "string",
             "format": "string",
             "example": "2022-07-18"
           },
-          "itensPedido": {
+          "itens_pedido": {
             "type": "array",
             "items": {
               "minItems": 0,
@@ -833,7 +833,7 @@
                     "id"
                   ]
                 },
-                "precoUnitario": {
+                "preco_unitario": {
                   "type": "number",
                   "format": "number",
                   "example": 300.0
@@ -853,14 +853,14 @@
           }
         },
         "required": [
-          "valorTotal",
-          "dataVenda",
+          "valor_total",
+          "data_venda",
           "cliente",
-          "itensPedido"
+          "itens_pedido"
         ]
       }
         },
-        "required": ["dataPagamento","pedido"]
+        "required": ["data_pagamento","pedido"]
       }
     }
   }

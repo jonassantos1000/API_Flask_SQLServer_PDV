@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request, jsonify
-from exception.exceptionHandler import *
+from exception.ExceptionHandler import *
 
 
 def checar_cliente(f):
@@ -13,7 +13,7 @@ def checar_cliente(f):
         try:
             for elemento in json:
                 valor = json[elemento]
-                if valor == "" or valor == None:
+                if not valor:
                     response = {"Error": "Falha na requisição",
                                 "Motivo": f"O campo '{elemento}' esta em branco ou não existe"}
                     return jsonify(response), 400

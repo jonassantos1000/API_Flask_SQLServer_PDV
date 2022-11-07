@@ -5,27 +5,27 @@ dao = ClienteDAO()
 
 class ClienteService:
     def insert(self, cliente):
-        dao.save(cliente)
+        return dao.save(cliente)
 
     def update(self, id, cliente):
-        if self.__clientEhValido(id):
+        if self.__cliente_eh_valido(id):
             dao.update(id, cliente)
             return
 
-    def findById(self, id):
-        if self.__clientEhValido(id):
-            return dao.findById(id)
+    def find_by_id(self, id):
+        if self.__cliente_eh_valido(id):
+            return dao.find_by_id(id)
 
-    def findAll(self):
-        return dao.findAll()
+    def find_all(self):
+        return dao.find_all()
 
     def delete(self, id):
-        if self.__clientEhValido(id):
+        if self.__cliente_eh_valido(id):
             dao.delete(id)
             return
 
-    def __clientEhValido(self, id):
-        cliente = dao.findById(id)
+    def __cliente_eh_valido(self, id):
+        cliente = dao.find_by_id(id)
         if (cliente != None):
             return True
         return False

@@ -3,7 +3,7 @@ from model.Pedido import *
 from model.Cliente import *
 from model.PagamentoDTO import *
 from service.ItensPedidoService import *
-from exception.exceptionHandler import *
+from exception.ExceptionHandler import *
 import logging
 
 logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
@@ -18,19 +18,21 @@ class PedidoDAO:
 
     def save(self, pedido):
         try:
-            self.gerarCursor()
+            self.gerar_cursor()
             logging.warning('INICIANDO METODO save DE PedidoDAO')
             self._cursor.execute(
                 'insert into estudos.pedido_venda (valor_total, data_venda, cliente_id) OUTPUT Inserted.id values (?,?,?)',
-                pedido.valorTotal, pedido.dataVenda, pedido.cliente.id)
+                pedido.valor_total, pedido.data_venda, pedido.cliente.id)
             row = self._cursor.fetchone()
             pedidoId = row.id
-            serviceItensPedido.insert(pedido.itensPedido, pedidoId, self._cursor)
+            serviceItensPedido.insert(pedido.itens_pedido, pedidoId, self._cursor)
+            pedido.id = pedidoId
             self._cursor.commit()
-        except ListaDeProdutosVazia as error:
+            return pedido
+        except EmptyProductList as error:
             logging.error(f'REALIZANDO ROLLBACK DO METODO save de PedidoDAO:\n {error.args}')
             self._cursor.rollback()
-            raise ListaDeProdutosVazia('PEDIDO INVALIDO',
+            raise EmptyProductList('PEDIDO INVALIDO',
                              'NAO FOI POSSIVEL PROSSEGUIR COM A OPERACAO, O PEDIDO NÃO CONTEM ITENS VENDIDOS !')
         except Exception as error:
             logging.error(f'REALIZANDO ROLLBACK DO METODO save de PedidoDAO:\n {error.args}')
@@ -39,11 +41,11 @@ class PedidoDAO:
                              'NAO FOI POSSIVEL PROSSEGUIR COM A OPERACAO, VERIFIQUE AS INFORMACOES INSERIDAS !')
         finally:
             logging.warning('FINALIZANDO METODO save DE PedidoDAO')
-            self.finalizaConexao()
+            self.finalizar_conexao()
 
-    def findById(self, id):
+    def find_by_id(self, id):
         try:
-            self.gerarCursor()
+            self.gerar_cursor()
             logging.info('INICIANDO METODO findById de PedidoDAO')
             listItensPedido = []
             logging.info('INICIANDO SELECT PARA BUSCAR ITENS DO PEDIDO')
@@ -56,11 +58,11 @@ class PedidoDAO:
             raise NotFound('Id Invalido', f"Pedido com id {id} não encontrado !")
         finally:
             logging.info('METODO findById DE PedidoDAO Finalizado')
-            self.finalizaConexao()
+            self.finalizar_conexao()
 
-    def findByIdCliente(self, id):
+    def find_by_id_cliente(self, id):
         try:
-            self.gerarCursor()
+            self.gerar_cursor()
             logging.info('INICIANDO METODO findByIdCliente de PedidoDAO')
             listItensPedido = []
             logging.info('INICIANDO SELECT PARA BUSCAR ITENS DO PEDIDO')
@@ -78,11 +80,11 @@ class PedidoDAO:
             raise BadRequest("Falha na requisição", f"Error: {error.args}")
         finally:
             logging.info('METODO findById DE PedidoDAO Finalizado')
-            self.finalizaConexao()
+            self.finalizar_conexao()
 
-    def findAll(self):
+    def find_all(self):
         try:
-            self.gerarCursor()
+            self.gerar_cursor()
             logging.info('INICIANDO METODO findAll de PedidoDAO')
             self._cursor.execute(select)
             row = self._cursor.fetchone()
@@ -97,12 +99,12 @@ class PedidoDAO:
                              'NAO FOI POSSIVEL PROSSEGUIR COM A OPERACAO, VERIFIQUE AS INFORMACOES INSERIDAS !')
         finally:
             logging.info('METODO findById DE PedidoDAO Finalizado')
-            self.finalizaConexao()
+            self.finalizar_conexao()
 
     def delete(self, id):
         try:
             logging.info('METODO delete DE PedidoDAO INICIADO')
-            self.gerarCursor()
+            self.gerar_cursor()
             serviceItensPedido.delete(id, self._cursor)
             self._cursor.execute('DELETE FROM estudos.pedido_venda where id=?', id)
             self._cursor.commit()
@@ -119,16 +121,16 @@ class PedidoDAO:
             logging.error('REALIZADO ROLLBACK NO METODO delete DE PedidoDAO')
         finally:
             logging.info('METODO delete DE PedidoDAO FINALIZADO')
-            self.finalizaConexao()
+            self.finalizar_conexao()
 
     def update(self, id, pedido):
         try:
-            self.gerarCursor()
+            self.gerar_cursor()
             logging.warning('METODO update DE PedidoDAO FINALIZADO')
             self._cursor.execute('update estudos.pedido_venda set valor_total=?, cliente_id=? where id=?',
-                                 pedido.valorTotal,
+                                 pedido.valor_total,
                                  pedido.cliente.id, id)
-            serviceItensPedido.update(pedido.itensPedido, id, self._cursor)
+            serviceItensPedido.update(pedido.itens_pedido, id, self._cursor)
             self._cursor.commit()
         except Exception as error:
             logging.error(f'OCORREU UM ERRO DURANTE A EXECUCAO DO METODO update DE PedidoDAO:\n {error.args}')
@@ -138,18 +140,18 @@ class PedidoDAO:
                              'NAO FOI POSSIVEL PROSSEGUIR COM A OPERACAO, VERIFIQUE AS INFORMACOES INSERIDAS !')
         finally:
             logging.warning('METODO update DE PedidoDAO FINALIZADO')
-            self.finalizaConexao()
+            self.finalizar_conexao()
 
-    def gerarCursor(self):
+    def gerar_cursor(self):
         self._connection = connection()
         self._cursor = self._connection.cursor()
 
-    def finalizaConexao(self):
+    def finalizar_conexao(self):
         self._connection.close()
 
     def populaObjeto(self, row):
-        itens = serviceItensPedido.findByIdPedido(row.id)
-        cliente = Cliente(row.cliente_id, row.nome, row.endereco, row.telefone).dict()
+        itens = serviceItensPedido.find_by_id_pedido(row.id)
+        cliente = Cliente(row.cliente_id, row.nome, row.endereco, row.telefone, row.email).dict()
         pagamento = {"Status": "PENDENTE"}
         if row.pagamento_id != None:
             pagamento = PagamentoDTO(row.pagamento_id, str(row.data_pagamento), str("PAGO")).dict()
@@ -159,7 +161,7 @@ class PedidoDAO:
 
 select = '''select 
 pv.id, pv.valor_total, pv.data_venda, pv.cliente_id, 
-tc.nome, tc.endereco, tc.telefone,
+tc.nome, tc.endereco, tc.telefone,tc.email,
 tp.id as pagamento_id, tp.data_pagamento 
 from estudos.pedido_venda pv 
 inner join estudos.tb_cliente tc on (pv.cliente_id = tc.id)

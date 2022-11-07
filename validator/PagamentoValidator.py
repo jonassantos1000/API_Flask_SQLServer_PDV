@@ -15,9 +15,9 @@ def checar_pagamento(f):
             pagamento= __populaObjeto(json)
             pedido = pagamento['pedido']
             cliente = pagamento['pedido']['cliente']
-            itens = pagamento['pedido']['itensPedido']
-            dataPagamento = datetime.datetime.strptime(json.get("dataPagamento"), "%Y-%m-%d")
-            dataVenda= datetime.datetime.strptime(pedido["dataVenda"], "%Y-%m-%d")
+            itens = pagamento['pedido']['itens_pedido']
+            data_pagamento = datetime.datetime.strptime(json.get("data_pagamento"), "%Y-%m-%d")
+            dataVenda= datetime.datetime.strptime(pedido["data_venda"], "%Y-%m-%d")
 
             #valida se o pedido id do pedido é valido
             if pedido['id'] == None or pedido['id']=="":
@@ -35,7 +35,7 @@ def checar_pagamento(f):
             #Valida as informações se é um item de pedido valido
             if not itens:
                 response = {"Error": "Falha na requisição",
-                            "Motivo": f"O campo itensPedido esta em branco ou não existe"}
+                            "Motivo": f"O campo itens_pedido esta em branco ou não existe"}
                 return jsonify(response), 400
 
             #Valida as informações dos itens do pedido
@@ -54,37 +54,36 @@ def checar_pagamento(f):
                                 return jsonify(response), 400
 
             #valida data de pagamento
-            if json.get("dataPagamento") == "" or json.get("dataPagamento") == None:
+            if json.get("data_pagamento") == "" or json.get("data_pagamento") == None:
                 response = {"Pagamento": "Reprovado",
                 "motivo":"Data informada é invalida"}
                 return jsonify(response), 400
 
             #valida se a data de pagamento é menor que a data de venda
-            if dataPagamento < dataVenda:
+            if data_pagamento < dataVenda:
                 response = {"Pagamento": "Reprovado",
                 "motivo":"Data de pagamento não pode ser menor que a data de venda"}
                 return jsonify(response), 400
 
             return f(*args, **kwargs)
         except KeyError as error:
-            raise IllegalArgument('JSON INVALIDO',
-                                  f'O JSON INFORMADO NÃO TEM O CAMPO {error.__str__()}, POR FAVOR REALIZE O AJUSTE E TENTE NOVAMENTE !')
+            raise IllegalArgument('JSON INVALIDO',f'O JSON INFORMADO NÃO TEM O CAMPO {error.__str__()}, POR FAVOR REALIZE O AJUSTE E TENTE NOVAMENTE !')
 
     return(validacoes)
 
 def __populaObjeto(json):
-    valorTotal = json['pedido']['valorTotal']
-    dataVenda = json['pedido']['dataVenda']
+    valorTotal = json['pedido']['valor_total']
+    dataVenda = json['pedido']['data_venda']
     cliente = Cliente(**json['pedido']['cliente']).dict()
     listItens = []
-    for itens in json['pedido']['itensPedido']:
+    for itens in json['pedido']['itens_pedido']:
         produto = Produto(**itens['produto'])
         quantidade = itens['quantidade']
-        precoUnitario = itens['precoUnitario']
+        precoUnitario = itens['preco_unitario']
         total = itens['total']
         item = ItensPedido(0, produto, quantidade, precoUnitario, total).dict()
         listItens.append(item)
     pedido=Pedido(json['pedido']['id'], cliente, valorTotal, dataVenda, {}, listItens).dict()
 
-    return Pagamento(None,pedido,json['dataPagamento']).dict()
+    return Pagamento(None,pedido,json['data_pagamento']).dict()
 

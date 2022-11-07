@@ -2,7 +2,7 @@ from dao.connectionFactory.connection import *
 import logging
 from model.ItensPedido import *
 from model.Produto import *
-from exception.exceptionHandler import *
+from exception.ExceptionHandler import *
 
 logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
 
@@ -11,7 +11,7 @@ class ItensPedidoDAO:
     def __init__(self):
         self._connection = connection()
 
-    def findItensPedidoById(self, pedidoId):
+    def find_itens_pedido_by_id(self, pedidoId):
         logging.info('METODO findItensPedidoById INICIADO')
         cursor = self._connection.cursor()
         try:
@@ -45,7 +45,7 @@ class ItensPedidoDAO:
             for item in listItem:
                 cursor.execute('''
                     INSERT INTO estudos.tb_itens_pedido (produto_id,pedido_venda_id, preco_unitario, quantidade, total) 
-                    values (?, ?, ?,?, ?)''', item.produto.id, idPedido, item.precoUnitario,item.quantidade, item.total)
+                    values (?, ?, ?,?, ?)''', item.produto.id, idPedido, item.preco_unitario, item.quantidade, item.total)
         except Exception as error:
             logging.error(
                 f"OCORREU UM ERRO DURANTE A EXECUCAO DO METODO save de ItensPedidoDAO:\n {error.args}")

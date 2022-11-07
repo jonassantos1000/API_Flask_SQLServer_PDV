@@ -19,5 +19,5 @@ class Produto:
     def dict(self):
         produto={}
         for key in self.__dict__:
-            produto[key.replace('_','')] = self.__dict__.__getitem__(key)
+            produto[key[1:]] = self.__dict__.__getitem__(key)
         return produto

@@ -4,7 +4,7 @@ class Pagamento:
     def __init__(self, id=None, pedido=None, dataPagamento=None):
         self._id = id
         self._pedido= pedido
-        self._dataPagamento = dataPagamento
+        self._data_pagamento = dataPagamento
 
     @property
     def id(self):
@@ -15,11 +15,11 @@ class Pagamento:
         return self._pedido
 
     @property
-    def dataPagamento(self):
-        return self._dataPagamento
+    def data_pagamento(self):
+        return self._data_pagamento
 
     def dict(self):
         pagamento={}
         for key in self.__dict__:
-            pagamento[key.replace('_','')] = self.__dict__.__getitem__(key)
+            pagamento[key[1:]] = self.__dict__.__getitem__(key)
         return pagamento

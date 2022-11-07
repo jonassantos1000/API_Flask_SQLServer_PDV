@@ -1,6 +1,6 @@
 from dao.connectionFactory.connection import connection
 from model.Produto import *
-from exception.exceptionHandler import *
+from exception.ExceptionHandler import *
 import logging
 
 logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
@@ -28,7 +28,7 @@ class ProdutoDAO:
             logging.info('METODO SAVE DE ProdutoDAO FINALIZADO')
             cursor.close()
 
-    def findAll(self):
+    def find_all(self):
         try:
             cursor = self._connection.cursor()
             logging.info('INICIANDO METODO FindAll DE ProdutoDAO')
@@ -45,7 +45,7 @@ class ProdutoDAO:
             logging.info('METODO FindAll DE ProdutoDAO FINALIZADO')
             cursor.close()
 
-    def findById(self, id):
+    def find_by_id(self, id):
         try:
             cursor = self._connection.cursor()
             logging.info('METODO FindById DE ProdutoDAO INICIADO')

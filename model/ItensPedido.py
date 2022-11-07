@@ -5,7 +5,7 @@ class ItensPedido:
         self._id = id
         self._produto = produto
         self._quantidade = quantidade
-        self._precoUnitario= precoUnitario
+        self._preco_unitario= precoUnitario
         self._total = total
 
     @property
@@ -21,8 +21,8 @@ class ItensPedido:
         return self._quantidade
 
     @property
-    def precoUnitario(self):
-        return self._precoUnitario
+    def preco_unitario(self):
+        return self._preco_unitario
 
     @property
     def total(self):
@@ -31,5 +31,5 @@ class ItensPedido:
     def dict(self):
         itens={}
         for key in self.__dict__:
-            itens[key.replace('_','')] = self.__dict__.__getitem__(key)
+            itens[key[1:]] = self.__dict__.__getitem__(key)
         return itens

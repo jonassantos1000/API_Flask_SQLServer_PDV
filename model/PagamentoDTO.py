@@ -1,7 +1,7 @@
 class PagamentoDTO:
     def __init__(self, id, dataPagamento, status=None):
         self._id = id
-        self._dataPagamento = dataPagamento
+        self._data_pagamento = dataPagamento
         self._status = status
 
     @property
@@ -9,8 +9,8 @@ class PagamentoDTO:
         return self._id
 
     @property
-    def dataPagamento(self):
-        return self._dataPagamento
+    def data_pagamento(self):
+        return self._data_pagamento
 
     @property
     def status(self):
@@ -19,5 +19,5 @@ class PagamentoDTO:
     def dict(self):
         pagamento={}
         for key in self.__dict__:
-            pagamento[key.replace('_','')] = self.__dict__.__getitem__(key)
+            pagamento[key[1:]] = self.__dict__.__getitem__(key)
         return pagamento

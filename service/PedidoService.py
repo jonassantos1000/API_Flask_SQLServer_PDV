@@ -1,32 +1,41 @@
+import threading
+
 from dao.PedidoDAO import *
+from service.EmailService import *
 
 dao = PedidoDAO()
 
 
 class PedidoService:
     def insert(self, pedido):
-        dao.save(pedido)
+        pedido = dao.save(pedido)
+        self.__enviar_pedido_por_email(pedido)
 
-    def findById(self, id):
-        if self.__pedidoEhValido(id):
-            return dao.findById(id)
+    def find_by_id(self, id):
+        if self.__pedido_eh_valido(id):
+            return dao.find_by_id(id)
 
-    def findByIdCliente(self, id):
-        return dao.findByIdCliente(id)
+    def find_by_id_cliente(self, id):
+        return dao.find_by_id_cliente(id)
 
-    def findAll(self):
-        return dao.findAll()
+    def find_all(self):
+        return dao.find_all()
 
     def update(self,id, pedido):
-        if self.__pedidoEhValido(id):
+        if self.__pedido_eh_valido(id):
             dao.update(id, pedido)
 
     def delete(self, id):
-        if self.__pedidoEhValido(id):
+        if self.__pedido_eh_valido(id):
             dao.delete(id)
 
-    def __pedidoEhValido(self, id):
-        pedido = dao.findById(id)
+    def __pedido_eh_valido(self, id):
+        pedido = dao.find_by_id(id)
         if (pedido != None):
             return True
         return False
+
+    def __enviar_pedido_por_email(self, pedido):
+        assunto = f'Pedido {pedido.id}'
+        mensagem = f'Voce realizou a compra de {len(pedido.itens_pedido)} itens em nossa loja.\n Total: {pedido.valor_total}'
+        threading.Thread(target=send, args=[pedido.cliente.email, assunto, mensagem]).start()

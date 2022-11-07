@@ -6,19 +6,19 @@ class PagamentoService:
     def insert(self, pagamento):
         dao.save(pagamento)
 
-    def findAll(self):
-        return dao.findAll()
+    def find_all(self):
+        return dao.find_all()
 
-    def findById(self, id):
-        if self.__PagamentoEhValido(id):
-            return dao.findById(id)
+    def find_by_id(self, id):
+        if self.__pagamento_eh_valido(id):
+            return dao.find_by_id(id)
 
     def delete(self, id):
-        if self.__PagamentoEhValido(id):
+        if self.__pagamento_eh_valido(id):
             return dao.delete(id)
 
-    def __PagamentoEhValido(self, id):
-        pagamento = dao.findById(id)
+    def __pagamento_eh_valido(self, id):
+        pagamento = dao.find_by_id(id)
         print(pagamento)
         if(pagamento != None):
             return True

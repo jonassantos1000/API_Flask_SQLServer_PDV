@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request, jsonify
-from exception.exceptionHandler import *
+from exception.ExceptionHandler import *
 from model.Cliente import Cliente
 from model.ItensPedido import ItensPedido
 from model.Pedido import Pedido
@@ -15,7 +15,7 @@ def checar_pedido(f):
             json = request.get_json()
             pedido= __populaObjeto(json).dict()
             cliente= pedido['cliente']
-            itens = pedido['itensPedido']
+            itens = pedido['itens_pedido']
 
             #valida o cliente
             for chave in cliente:
@@ -23,6 +23,7 @@ def checar_pedido(f):
                     response = {"Error": "Falha na requisição",
                                 "Motivo": f"O campo '{chave}' de cliente esta em branco ou não existe"}
                     return jsonify(response), 400
+
             #valida itens do pedido
             for item in itens:
                 for chave in item:
@@ -47,14 +48,14 @@ def checar_pedido(f):
     return (validacoesPedido)
 
 def __populaObjeto(jsonPedido):
-    valorTotal = jsonPedido['valorTotal']
-    dataVenda = jsonPedido['dataVenda']
+    valorTotal = jsonPedido['valor_total']
+    dataVenda = jsonPedido['data_venda']
     cliente = Cliente(**jsonPedido['cliente']).dict()
     listItens = []
-    for itens in jsonPedido['itensPedido']:
+    for itens in jsonPedido['itens_pedido']:
         produto = Produto(**itens['produto'])
         quantidade = itens['quantidade']
-        precoUnitario = itens['precoUnitario']
+        precoUnitario = itens['preco_unitario']
         total = itens['total']
         item = ItensPedido(0, produto, quantidade, precoUnitario, total).dict()
         listItens.append(item)
